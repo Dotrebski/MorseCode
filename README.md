@@ -1,4 +1,4 @@
-# Morse Code Translator and Audio Generator -.-
+# Morse Code Translator and Audio Generator
 
 This project provides a GUI application that translates text into Morse code, generates audio files for the Morse code, and allows playback of these audio files.
 
