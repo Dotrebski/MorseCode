@@ -39,7 +39,7 @@ most_recent_audio_filepath: str = ""
 BG_COLOR: str = "#454679"  # Soft Indigo
 LABEL_COLOR: str = "#FFC900"  # Tangerine Yellow
 
-# Images' filepaths, Dimensions and Padding
+# Img filepaths, Dimensions and Padding
 LOGO_FILEPATH: str = "app_logo.png"
 DEFAULT_AUDIO_OUTPUT_FILEPATH: str = "morse_code_audio.wav"
 
