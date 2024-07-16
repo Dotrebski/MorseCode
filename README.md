@@ -16,6 +16,7 @@ This project provides a GUI application that translates text into Morse code, ge
 - Python 3.x
 - Tkinter
 - Pyperclip
+- unidecode
 - pycw
 - playsound3
 
@@ -51,10 +52,11 @@ Contributions are what make the open-source community such an amazing place to l
 5. Open a Pull Request
 
 ## License
-Distributed under the BSD-3 License. See LICENSE for more information.
+Distributed under the BSD-3 License. See [LICENSE](LICENSE) for more information.
 
 ## Acknowledgements
 * Tkinter
-* Pyperclip
-* pycw
-* playsound3
+* [pycw](https://github.com/bigsk05/pycw)
+* [playsound3](https://github.com/sjmikler/playsound3)
+* [unidecode](https://github.com/avian2/unidecode)
+* [Pyperclip](https://github.com/asweigart/pyperclip)
