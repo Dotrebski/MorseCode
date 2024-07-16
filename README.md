@@ -38,7 +38,7 @@ pip install -r requirements.txt
 Run the application:
 
 ```bash
-python morse_code_app.py
+python main.py
 ```
 
 ## Contributing
