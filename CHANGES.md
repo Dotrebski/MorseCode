@@ -2,6 +2,9 @@
 ### Added
 - Created two directories: `modules` and `images`.
 - Added exception handling and error message if the logo can't be found.
+- Created the constant `DEFAULT_AUDIO_OUTPUT_DIR` which stores the directory name where the app will attempt to save audio files.
+- Added parameters to most functions as they're now called with data by the lambdas in `UI.py`.
+- The `create_audio_file()` function will now create the above-mentioned directory if it doesn't exist.
 
 ### Changed
 - Split the entire application into `morse_code.py` and three modules: `UI.py`, `functions.py` and `globals.py`.
@@ -13,9 +16,6 @@
 - Replaced all named function from the UI with lambdas.
 - Removed the `copy_plain_text()` and `copy_morse_translation()` functions as they're no longer needed.
 - Moved the `most_recent_audio_filepath` variable to `functions.py`.
-- Added parameters to most functions as they're now called with data by the lambdas in `UI.py`.
-- Created the constant `DEFAULT_AUDIO_OUTPUT_DIR` which stores the directory name where the app will attempt to save audio files.
-- The `create_audio_file()` function will now create the above-mentioned directory if it doesn't exist.
 - Changed the main font to Arial and adjusted its size for the three types of texts.
 
 ### Fixed
