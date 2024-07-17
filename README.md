@@ -1,4 +1,4 @@
-# Morse Code Translator and Audio Generator
+# Morse Code Translator and Audio Generator 0.2.0
 
 This project provides a GUI application that translates text into Morse code, generates audio files for the Morse code, and allows playback of these audio files.
 
@@ -13,7 +13,7 @@ This project provides a GUI application that translates text into Morse code, ge
 
 ### Prerequisites
 
-- Python 3.x
+- Python 3.6 or higher (as determined by [Vermin](https://github.com/netromdk/vermin))
 - Tkinter
 - Pyperclip
 - unidecode
@@ -39,7 +39,7 @@ pip install -r requirements.txt
 Run the application:
 
 ```bash
-python main.py
+python morse_code.py
 ```
 
 ## Contributing
