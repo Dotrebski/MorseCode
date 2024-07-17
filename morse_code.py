@@ -1,7 +1,7 @@
 """
-Morse Code Translator and Audio Generator 0.2.0
+Morse Code Translator and Audio Generator 0.3.0
 
-This script provides a GUI application to translate text to Morse code,
+This script provides a GUI application to translate text to Morse code, and vice versa,
 generate audio files for the Morse code, and play them back.
 
 Dependencies:
@@ -19,6 +19,7 @@ No command-line arguments are required.
 import tkinter as tk
 from tkinter import messagebox as msgbox
 from os.path import splitext, exists
+import re
 import unidecode
 import pyperclip
 import pycw
@@ -26,7 +27,7 @@ from playsound3 import playsound
 from playsound3.playsound3 import PlaysoundException
 
 # -- Globals --
-APP_TITLE: str = "Morse Code Translator and Audio Generator 0.2.0"
+APP_TITLE: str = "Morse Code Translator and Audio Generator 0.3.0"
 MORSE_CODE_DICT: dict = {"A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.",
                          "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.",
                          "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-",
@@ -41,7 +42,7 @@ most_recent_audio_filepath = ""
 
 # Colors
 BG_COLOR: str = "#454679"  # Soft Indigo
-LABEL_AND_CHECKBOX_TEXT_COLOR: str = "#FFC900"  # Tangerine Yellow
+STATIC_TEXT_COLOR: str = "#FFC900"  # Tangerine Yellow
 
 # Images' filepaths, dimensions and padding
 LOGO_FILEPATH: str = "app_logo.png"
@@ -55,18 +56,20 @@ PADD_Y: int = 60
 BUTTON_X_PADD: tuple[int, int] = (5, 0)
 
 # Buttons
-BUTTON_WIDTH: int = 15
-BUTTON_TRANSLATE_TEXT: str = "Translate"
+BUTTON_SMALL_WIDTH: int = 15
+BUTTON_LARGE_WIDTH: int = 31
+BUTTON_TRANSLATE_TO_MORSE_TEXT: str = "To Morse"
+BUTTON_TRANSLATE_TO_PLAIN_TEXT: str = "To Plain Text"
 BUTTON_COPY_TEXT: str = "Copy"
 BUTTON_PLAY_TEXT: str = "Play Audio"
 
 # Labels
-LABEL_YOUR_TEXT_TEXT: str = "Your text:"
-LABEL_MORSE_CODE_OUTPUT_TEXT: str = "Morse code:"
-LABEL_AUDIO_OUTPUT_TEXT: str = "Audio:"
+LABEL_PLAIN_TEXT_IO_TEXT: str = "Plain Text:"
+LABEL_MORSE_CODE_IO_TEXT: str = "Morse Code:"
+LABEL_AUDIO_STATUS_TEXT: str = "Audio Status:"
 
 # Checkbox
-TEXT_CHECKBOX: str = "Create audio"
+CHECKBOX_TEXT: str = "Create Audio"
 VAL_ON_CHECKBOX: bool = True
 VAL_OFF_CHECKBOX: bool = False
 
@@ -83,12 +86,13 @@ MSGBOX_TITLE_SUCCESS: str = "Success"
 MSGBOX_TITLE_WARNING: str = "Warning"
 MSGBOX_TITLE_ERROR: str = "Error"
 
-MSGBOX_MSG_COPY_SUCCESS: str = "The translation has been successfully copied to your clipboard."
+MSGBOX_MSG_COPY_SUCCESS: str = "The text has been successfully copied to your clipboard."
 MSGBOX_MSG_COPY_WARNING: str = "There is nothing to copy (yet)."
 MSGBOX_MSG_PLAY_WARNING: str = "There is nothing to play (yet)."
 MSGBOX_MSG_PLAY_FILE_NF_ERROR: str = "The file that has just been created doesn't seem to exist anymore."
 MSGBOX_MSG_TRANSLATE_WARNING: str = "There is nothing to translate (yet)."
-MSGBOX_MSG_TRANSLATE_PERMISS_ERROR: str = "The program doesn't have permission to save files to the current location."
+MSGBOX_MSG_TRANSLATE_TO_MORSE_ERROR: str = "The program doesn't have permission to save files to the current location."
+MSGBOX_MSG_TRANSLATE_TO_PLAIN_WARNING: str = "You may only use the characters: .-/ and spaces in your Morse code input."
 
 # Audio Settings
 AUDIO_TONE: int = 800
@@ -96,6 +100,15 @@ AUDIO_VOLUME: float = 1.0
 AUDIO_SAMPLE_RATE: int = 44100
 AUDIO_WPM: int = 20  # Words per Minute
 AUDIO_READY_MESSAGE: str = "READY:"
+
+# Regex Patterns
+PATT_SANITIZE_MORSE_CODE_INPUT = re.compile(r"""
+    [.\-/ ]+   # Match one or more of the characters: dot, dash, slash, space
+""", re.VERBOSE)
+
+PATT_REDUCE_SPACES_MORSE_CODE_INPUT = re.compile(r"""
+    \d{2,}   # Match two or more spaces
+""", re.VERBOSE)
 
 
 # -- Functions --
@@ -113,9 +126,11 @@ def play_audio_file() -> None:
     if audio_output_text:
         try:
             playsound(most_recent_audio_filepath)
+
         except PlaysoundException as e:
             # Display an error if the audio file can't be played.
             msgbox.showerror(title=MSGBOX_TITLE_ERROR, message=str(e))
+
     else:
         # Display a warning if no audio file has been created yet.
         msgbox.showwarning(title=MSGBOX_TITLE_WARNING, message=MSGBOX_MSG_PLAY_WARNING)
@@ -148,10 +163,12 @@ def create_audio_file(normalized_text: str) -> None:
     try:
         pycw.output_wave(audio_filepath, normalized_text, tone=AUDIO_TONE, volume=AUDIO_VOLUME,
                          sample_rate=AUDIO_SAMPLE_RATE, wpm=AUDIO_WPM)
+
     except PermissionError:
         # Display an error if the audio file can't be created
         # due to lack of permissions.
-        msgbox.showerror(title=MSGBOX_TITLE_ERROR, message=MSGBOX_MSG_TRANSLATE_PERMISS_ERROR)
+        msgbox.showerror(title=MSGBOX_TITLE_ERROR, message=MSGBOX_MSG_TRANSLATE_TO_MORSE_ERROR)
+
     else:
         # Save the audio filepath as the most recent one.
         global most_recent_audio_filepath
@@ -163,7 +180,7 @@ def create_audio_file(normalized_text: str) -> None:
         # and change the state again to disallow further modifications.
         entry_audio_status.config(state="normal")
         entry_audio_status.delete(0, tk.END)
-        entry_audio_status.insert(0, f"{AUDIO_READY_MESSAGE}: {most_recent_audio_filepath}")
+        entry_audio_status.insert(0, f"{AUDIO_READY_MESSAGE} {most_recent_audio_filepath}")
         entry_audio_status.config(state="readonly")
 
 
@@ -177,7 +194,7 @@ def translate_to_morse_code() -> None:
         None
     """
 
-    user_text: str = entry_text.get()
+    user_text: str = entry_plain_text_io.get()
 
     if user_text:
         # Eliminate diacritical letters by finding the closest ASCII
@@ -188,24 +205,18 @@ def translate_to_morse_code() -> None:
         # Translate the normalized text to Morse code.
         # Each letter is looked up in the MORSE_CODE_DICT,
         # and words are separated by a slash with spaces.
-        mcode: str = " / ".join(' '.join(map(lambda c: MORSE_CODE_DICT.get(c, ""), word)) for word in split_user_text)
+        mcode: str = " / ".join(" ".join(map(lambda c: MORSE_CODE_DICT.get(c, ""), word)) for word in split_user_text)
 
-        # Change the state of the relevant entry widget to allow
-        # the modification of its text. Delete the previous text,
-        # insert the translation, and change the state again
-        # to disallow further modifications.
-        entry_morse_code_output.config(state="normal")
-        entry_morse_code_output.delete(0, tk.END)
-        entry_morse_code_output.insert(0, mcode)
-        entry_morse_code_output.config(state="readonly")
+        # Delete the previous text and insert the translation.
+        entry_morse_code_io.delete(0, tk.END)
+        entry_morse_code_io.insert(0, mcode)
 
         if audio_requested.get():
             create_audio_file(normalized_user_text)
         else:
             # Change the state of the relevant entry widget to allow
             # the modification of its text. Delete the previous text,
-            # and change the state again to disallow further
-            # modifications.
+            # and change the state again to disallow further edits.
             entry_audio_status.config(state="normal")
             entry_audio_status.delete(0, tk.END)
             entry_audio_status.config(state="readonly")
@@ -218,22 +229,83 @@ def translate_to_morse_code() -> None:
         msgbox.showwarning(title=MSGBOX_TITLE_WARNING, message=MSGBOX_MSG_TRANSLATE_WARNING)
 
 
-def copy_translation() -> None:
-    """Copy the Morse code translation to the system clipboard.
+def translate_to_plaintext() -> None:
+    """Translate the Morse code entered by the user into plain text,
+    and display it in the GUI.
 
     Returns:
         None
     """
 
-    morse_code_output_text: str = entry_morse_code_output.get()
-    if morse_code_output_text:
-        # Copy the translation to the systen clipboard and display
-        # a success message to the user
-        pyperclip.copy(morse_code_output_text)
-        msgbox.showinfo(title=MSGBOX_TITLE_SUCCESS, message=MSGBOX_MSG_COPY_SUCCESS)
+    user_morse_code_text: str = entry_morse_code_io.get().strip()
+    if not user_morse_code_text:
+        # Display a warning if the user has not provided any input
+        msgbox.showwarning(title=MSGBOX_TITLE_WARNING, message=MSGBOX_MSG_TRANSLATE_WARNING)
+
+    elif not bool(re.fullmatch(pattern=PATT_SANITIZE_MORSE_CODE_INPUT, string=user_morse_code_text)):
+        # Display a warning if the user has provided illegal chars.
+        msgbox.showwarning(title=MSGBOX_TITLE_WARNING, message=MSGBOX_MSG_TRANSLATE_TO_PLAIN_WARNING)
+
     else:
-        # Display a warning if no translation has been created yet
+
+        # Replace each occurrence of two spaces or more with one space.
+        user_morse_code_text_reduced: str = re.sub(pattern=PATT_REDUCE_SPACES_MORSE_CODE_INPUT, repl=" ",
+                                                   string=user_morse_code_text)
+        # Split the user's input into a list of words.
+        split_user_morse_code_text: list = user_morse_code_text_reduced.split(" / ")
+
+        # Create the dictionary with switched keys and values.
+        reversed_morse_code_dict: dict = {v: k for k, v in MORSE_CODE_DICT.items()}
+
+        # Look up each Morse code letter in that dict, and join each
+        # word with the separator being a space.
+        plain_text: str = " ".join("".join(map(lambda c: reversed_morse_code_dict.get(c, ""), word.split())) for word
+                                   in split_user_morse_code_text)
+
+        # Insert plain_text into the output widget.
+        entry_plain_text_io.delete(0, tk.END)
+        entry_plain_text_io.insert(0, plain_text)
+
+
+def copy_to_clipboard(text_to_copy: str) -> None:
+    """A utility function to copy the arg to the clipboard.
+
+    Args:
+        text_to_copy: str: String from an entry widget.
+
+    Returns:
+        None
+    """
+
+    if text_to_copy:
+        # Copy the translation to the systen clipboard and display
+        # a success message to the user.
+        pyperclip.copy(text_to_copy)
+        msgbox.showinfo(title=MSGBOX_TITLE_SUCCESS, message=MSGBOX_MSG_COPY_SUCCESS)
+
+    else:
+        # Display a warning if there is no input yet.
         msgbox.showwarning(title=MSGBOX_TITLE_WARNING, message=MSGBOX_MSG_COPY_WARNING)
+
+
+def copy_morse_translation() -> None:
+    """Call the main copying function with the Morse translation as argument.
+
+    Returns:
+        None
+    """
+
+    copy_to_clipboard(entry_morse_code_io.get())
+
+
+def copy_plain_text() -> None:
+    """Call the main copying function with the plain text as argument.
+
+    Returns:
+        None
+    """
+
+    copy_to_clipboard(entry_plain_text_io.get())
 
 
 # -- UI Configuration --
@@ -253,49 +325,60 @@ canvas.create_image(IMG_WIDTH // 2, IMG_HEIGHT // 2, image=app_logo)
 canvas.config(bg=BG_COLOR, highlightthickness=0)
 canvas.grid(column=0, row=0, columnspan=4)
 
-# Labels for user input and output fields with custom font and color
-label_your_text = tk.Label(text=LABEL_YOUR_TEXT_TEXT, fg=LABEL_AND_CHECKBOX_TEXT_COLOR, bg=BG_COLOR, font=LABEL_FONT)
-label_your_text.grid(column=0, row=1)
+# Labels for user i/o fields with custom font and color
+label_plain_text_io = tk.Label(text=LABEL_PLAIN_TEXT_IO_TEXT, fg=STATIC_TEXT_COLOR, bg=BG_COLOR, font=LABEL_FONT)
+label_plain_text_io.grid(column=0, row=2)
 
-label_morse_code_output = tk.Label(text=LABEL_MORSE_CODE_OUTPUT_TEXT, fg=LABEL_AND_CHECKBOX_TEXT_COLOR, bg=BG_COLOR,
-                                   font=LABEL_FONT)
-label_morse_code_output.grid(column=0, row=3)
+label_morse_code_io = tk.Label(text=LABEL_MORSE_CODE_IO_TEXT, fg=STATIC_TEXT_COLOR, bg=BG_COLOR, font=LABEL_FONT)
+label_morse_code_io.grid(column=0, row=3)
 
-label_audio_output = tk.Label(text=LABEL_AUDIO_OUTPUT_TEXT, fg=LABEL_AND_CHECKBOX_TEXT_COLOR, bg=BG_COLOR,
-                              font=LABEL_FONT)
-label_audio_output.grid(column=0, row=4)
+label_audio_status = tk.Label(text=LABEL_AUDIO_STATUS_TEXT, fg=STATIC_TEXT_COLOR, bg=BG_COLOR, font=LABEL_FONT)
+label_audio_status.grid(column=0, row=4)
 
-# Entry widgets for user input, Morse code output, and audio status
-entry_text = tk.Entry(width=ENTRY_WIDTH)
-entry_text.focus()  # Automatically focus on the text entry field
-entry_text.grid(column=1, row=1)
+# Entry widgets for plain text i/o, Morse code i/o, and audio status
+entry_plain_text_io = tk.Entry(width=ENTRY_WIDTH)
+entry_plain_text_io.focus()  # Automatically focus on the text entry field
+entry_plain_text_io.grid(column=1, row=2)
 
-entry_morse_code_output = tk.Entry(width=ENTRY_WIDTH)
-entry_morse_code_output.config(state="readonly")  # Prevent editing Morse code output
-entry_morse_code_output.grid(column=1, row=3)
+entry_morse_code_io = tk.Entry(width=ENTRY_WIDTH)
+entry_morse_code_io.grid(column=1, row=3)
 
 entry_audio_status = tk.Entry(width=ENTRY_WIDTH)
 entry_audio_status.config(state="readonly")  # Display audio file status, not editable by the user
 entry_audio_status.grid(column=1, row=4)
 
-# Buttons for translating text, copying Morse code, and playing audio
-button_translate = tk.Button(text=BUTTON_TRANSLATE_TEXT, font=BUTTON_FONT, width=BUTTON_WIDTH,
-                             command=translate_to_morse_code)
-button_translate.grid(column=2, row=1, padx=BUTTON_X_PADD)
+# Buttons for translating text, copying text, and playing audio
+button_translate_to_morse = tk.Button(text=BUTTON_TRANSLATE_TO_MORSE_TEXT, font=BUTTON_FONT, width=BUTTON_SMALL_WIDTH,
+                                      command=translate_to_morse_code, bg=BG_COLOR, fg=STATIC_TEXT_COLOR,
+                                      activebackground=BG_COLOR, activeforeground=STATIC_TEXT_COLOR)
+button_translate_to_morse.grid(column=2, row=2, padx=BUTTON_X_PADD)
 
-button_copy = tk.Button(text=BUTTON_COPY_TEXT, font=BUTTON_FONT, width=BUTTON_WIDTH, command=copy_translation)
-button_copy.grid(column=2, row=3, padx=BUTTON_X_PADD)
+button_copy_plain = tk.Button(text=BUTTON_COPY_TEXT, font=BUTTON_FONT, width=BUTTON_SMALL_WIDTH,
+                              command=copy_plain_text, bg=BG_COLOR, fg=STATIC_TEXT_COLOR, activebackground=BG_COLOR,
+                              activeforeground=STATIC_TEXT_COLOR)
+button_copy_plain.grid(column=3, row=2)
 
-button_play_audio = tk.Button(text=BUTTON_PLAY_TEXT, font=BUTTON_FONT, width=BUTTON_WIDTH,
-                              command=play_audio_file)
-button_play_audio.grid(column=2, row=4, padx=BUTTON_X_PADD)
+button_translate_to_plain = tk.Button(text=BUTTON_TRANSLATE_TO_PLAIN_TEXT, font=BUTTON_FONT, width=BUTTON_SMALL_WIDTH,
+                                      command=translate_to_plaintext, bg=BG_COLOR, fg=STATIC_TEXT_COLOR,
+                                      activebackground=BG_COLOR, activeforeground=STATIC_TEXT_COLOR)
+button_translate_to_plain.grid(column=2, row=3, padx=BUTTON_X_PADD)
+
+button_copy_morse = tk.Button(text=BUTTON_COPY_TEXT, font=BUTTON_FONT, width=BUTTON_SMALL_WIDTH,
+                              command=copy_morse_translation, bg=BG_COLOR, fg=STATIC_TEXT_COLOR,
+                              activebackground=BG_COLOR, activeforeground=STATIC_TEXT_COLOR)
+button_copy_morse.grid(column=3, row=3)
+
+button_play_audio = tk.Button(text=BUTTON_PLAY_TEXT, font=BUTTON_FONT, width=BUTTON_LARGE_WIDTH,
+                              command=play_audio_file, bg=BG_COLOR, fg=STATIC_TEXT_COLOR, activebackground=BG_COLOR,
+                              activeforeground=STATIC_TEXT_COLOR)
+button_play_audio.grid(column=2, row=4, padx=BUTTON_X_PADD, columnspan=2)
 
 # Checkbox for deciding whether to produce an audio file
-checkbox_audio_request = tk.Checkbutton(text=TEXT_CHECKBOX, variable=audio_requested, onvalue=VAL_ON_CHECKBOX,
+checkbox_audio_request = tk.Checkbutton(text=CHECKBOX_TEXT, variable=audio_requested, onvalue=VAL_ON_CHECKBOX,
                                         offvalue=VAL_OFF_CHECKBOX, bg=BG_COLOR, highlightthickness=0,
-                                        font=CHECKBOX_FONT, fg=LABEL_AND_CHECKBOX_TEXT_COLOR, activebackground=BG_COLOR,
-                                        activeforeground=LABEL_AND_CHECKBOX_TEXT_COLOR, selectcolor=BG_COLOR)
-checkbox_audio_request.grid(column=1, row=2)
+                                        font=CHECKBOX_FONT, fg=STATIC_TEXT_COLOR, activebackground=BG_COLOR,
+                                        activeforeground=STATIC_TEXT_COLOR, selectcolor=BG_COLOR)
+checkbox_audio_request.grid(column=1, row=1)
 
 # Start the main event loop of the application
 root.mainloop()
