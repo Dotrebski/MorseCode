@@ -8,7 +8,7 @@ output audio settings and regex patterns.
 
 import re
 
-APP_TITLE: str = "Morse Code Translator and Audio Generator 0.4.0"
+APP_TITLE: str = "Morse Code Translator and Audio Generator 0.4.1"
 MORSE_CODE_DICT: dict = {"A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.",
                          "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.",
                          "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-",

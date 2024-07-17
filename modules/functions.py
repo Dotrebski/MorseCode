@@ -69,7 +69,7 @@ def create_audio_file(normalized_text: str, audio_status: tk.Entry) -> None:
     # Create the directory if it doesn't exist yet
     makedirs(name=DEFAULT_AUDIO_OUTPUT_DIR, exist_ok=True)
 
-    while exists(path=audio_filepath):
+    while exists(audio_filepath):
         counter += 1
         audio_filepath = f"{audio_file_name}_{counter}{audio_file_ext}"
 

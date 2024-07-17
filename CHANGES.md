@@ -1,3 +1,7 @@
+## [v0.4.1] -- 2024-07-18
+### Fixed
+- Eliminated illegally used parameter in the call to `os.exists()` in the `create_audio_file()` function.
+
 ## [v0.4.0] -- 2024-07-18
 ### Added
 - Created two directories: `modules` and `images`.
