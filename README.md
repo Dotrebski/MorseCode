@@ -1,13 +1,14 @@
-# Morse Code Translator and Audio Generator 0.2.0
+# Morse Code Translator and Audio Generator 0.3.0
 
-This project provides a GUI application that translates text into Morse code, generates audio files for the Morse code, and allows playback of these audio files.
+This project provides a GUI application that translates text into Morse code, and vice versa, generates audio files for the Morse code, and allows playback of these audio files.
 
 ## Features
 
 - Translate text to Morse code.
+- Translate Morse code to text.
 - Generate Morse code audio files (.wav format).
 - Play Morse code audio directly from the application.
-- Copy Morse code translation to the clipboard.
+- Copy text outputs to the clipboard.
 
 ## Getting Started
 
