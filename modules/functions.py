@@ -1,9 +1,8 @@
 """
-This module contains all the functions used by the
-Morse Code Translator application.
+This module contains all the functions used by the application.
 
 It defines: play_audio_file, create_audio_file,
-translate_to_morse_code,translate_to_plain_text, and copy_to_clipboard.
+translate_to_morse_code, translate_to_plain_text & copy_to_clipboard.
 """
 
 import tkinter as tk
@@ -21,13 +20,13 @@ most_recent_audio_filepath: str = ""
 
 
 def play_audio_file(audio_status: str) -> None:
-    """Play the most-recently-generated Morse code audio file.
+    """Play back the most-recently-generated Morse code audio file.
 
     Args:
         audio_status: str: Text from the widget entry_audio_status
 
     Raises:
-        PlaysoundException: If the audio file can't be played
+        PlaysoundException: If the audio file can't be played back
 
     Returns:
         None
@@ -47,7 +46,7 @@ def play_audio_file(audio_status: str) -> None:
 
 
 def create_audio_file(normalized_text: str, audio_status: tk.Entry) -> None:
-    """Generate a Morse code audio file from a normalized text.
+    """Generate the Morse code audio file from a normalized text.
 
     Args:
         normalized_text (str): Text to be converted into audio
@@ -210,11 +209,11 @@ def copy_to_clipboard(text_to_copy: str) -> None:
     """
 
     if text_to_copy:
-        # Copy the translation to the systen clipboard and display
+        # Copy the text to the system clipboard and display
         # a success message to the user.
         pyperclip.copy(text=text_to_copy)
         msgbox.showinfo(title=MSGBOX_TITLE_SUCCESS, message=MSGBOX_MSG_COPY_SUCCESS)
 
     else:
-        # Display a warning if there is no input yet
+        # Display a warning if there is no input
         msgbox.showwarning(title=MSGBOX_TITLE_WARNING, message=MSGBOX_MSG_COPY_WARNING)

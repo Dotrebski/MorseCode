@@ -1,6 +1,6 @@
 """
 This module contains all the user interface components for the
-Morse Code Translator application.
+application.
 
 It defines the layout and behavior of the GUI, including buttons,
 entry fields, labels, and other Tkinter widgets.
@@ -32,19 +32,19 @@ else:
 label_plain_text_io = tk.Label(text=LABEL_PLAIN_TEXT_IO_TEXT,
                                fg=STATIC_TEXT_COLOR,
                                bg=BG_COLOR,
-                               font=LABEL_FONT)
+                               font=FONT_LABEL)
 label_plain_text_io.grid(column=0, row=2)
 
 label_morse_code_io = tk.Label(text=LABEL_MORSE_CODE_IO_TEXT,
                                fg=STATIC_TEXT_COLOR,
                                bg=BG_COLOR,
-                               font=LABEL_FONT)
+                               font=FONT_LABEL)
 label_morse_code_io.grid(column=0, row=3)
 
 label_audio_status = tk.Label(text=LABEL_AUDIO_STATUS_TEXT,
                               fg=STATIC_TEXT_COLOR,
                               bg=BG_COLOR,
-                              font=LABEL_FONT)
+                              font=FONT_LABEL)
 label_audio_status.grid(column=0, row=4)
 
 # Entry widgets for plain text i/o, Morse code i/o,
@@ -56,81 +56,83 @@ entry_plain_text_io.grid(column=1, row=2)
 entry_morse_code_io = tk.Entry(width=ENTRY_WIDTH)
 entry_morse_code_io.grid(column=1, row=3)
 
-entry_audio_status = tk.Entry(width=ENTRY_WIDTH)
+entry_audio_status = tk.Entry(width=ENTRY_AUDIO_STATUS_WIDTH, readonlybackground=READONLY_ENTRY_BG_COLOR)
 entry_audio_status.config(state="readonly")  # Display audio file status, not editable by the user
-entry_audio_status.grid(column=1, row=4)
+entry_audio_status.grid(column=1, row=4, columnspan=2)
 
 # Buttons for translating text, copying text,
 # and playing audio with custom styles
 button_translate_to_morse = tk.Button(text=BUTTON_TRANSLATE_TO_MORSE_TEXT,
-                                      font=BUTTON_FONT,
-                                      width=BUTTON_SMALL_WIDTH,
+                                      font=FONT_BUTTON,
+                                      width=BUTTON_WIDTH,
                                       command=lambda: translate_to_morse_code(user_plain_text=entry_plain_text_io.get(),
                                                                               output_entry=entry_morse_code_io,
                                                                               audio_request=audio_requested.get(),
                                                                               audio_status=entry_audio_status),
-                                      bg=BG_COLOR,
-                                      fg=STATIC_TEXT_COLOR,
-                                      activebackground=BG_COLOR,
-                                      activeforeground=STATIC_TEXT_COLOR)
+                                      bg=BUTTON_BG_COLOR,
+                                      fg=BUTTON_TEXT_COLOR,
+                                      activebackground=BUTTON_PRESSED_BG_COLOR,
+                                      activeforeground=BUTTON_TEXT_COLOR,
+                                      border=BUTTON_BORDER_WIDTH)
 button_translate_to_morse.grid(column=2, row=2, padx=BUTTON_X_PADD)
 
 button_copy_plain = tk.Button(text=BUTTON_COPY_TEXT,
-                              font=BUTTON_FONT,
-                              width=BUTTON_SMALL_WIDTH,
+                              font=FONT_BUTTON,
+                              width=BUTTON_WIDTH,
                               command=lambda: copy_to_clipboard(text_to_copy=entry_plain_text_io.get()),
-                              bg=BG_COLOR,
-                              fg=STATIC_TEXT_COLOR,
-                              activebackground=BG_COLOR,
-                              activeforeground=STATIC_TEXT_COLOR)
+                              bg=BUTTON_BG_COLOR,
+                              fg=BUTTON_TEXT_COLOR,
+                              activebackground=BUTTON_PRESSED_BG_COLOR,
+                              activeforeground=BUTTON_TEXT_COLOR,
+                              border=BUTTON_BORDER_WIDTH)
 button_copy_plain.grid(column=3, row=2)
 
 button_translate_to_plain = tk.Button(text=BUTTON_TRANSLATE_TO_PLAIN_TEXT,
-                                      font=BUTTON_FONT,
-                                      width=BUTTON_SMALL_WIDTH,
+                                      font=FONT_BUTTON,
+                                      width=BUTTON_WIDTH,
                                       command=lambda: translate_to_plain_text(
                                           user_morse_code_text=entry_morse_code_io.get().strip(),
                                           output_entry=entry_plain_text_io,
                                           audio_status=entry_audio_status),
-                                      bg=BG_COLOR,
-                                      fg=STATIC_TEXT_COLOR,
-                                      activebackground=BG_COLOR,
-                                      activeforeground=STATIC_TEXT_COLOR)
+                                      bg=BUTTON_BG_COLOR,
+                                      fg=BUTTON_TEXT_COLOR,
+                                      activebackground=BUTTON_PRESSED_BG_COLOR,
+                                      activeforeground=BUTTON_TEXT_COLOR,
+                                      border=BUTTON_BORDER_WIDTH)
 button_translate_to_plain.grid(column=2, row=3, padx=BUTTON_X_PADD)
 
 button_copy_morse = tk.Button(text=BUTTON_COPY_TEXT,
-                              font=BUTTON_FONT,
-                              width=BUTTON_SMALL_WIDTH,
+                              font=FONT_BUTTON,
+                              width=BUTTON_WIDTH,
                               command=lambda: copy_to_clipboard(text_to_copy=entry_morse_code_io.get()),
-                              bg=BG_COLOR,
-                              fg=STATIC_TEXT_COLOR,
-                              activebackground=BG_COLOR,
-                              activeforeground=STATIC_TEXT_COLOR)
+                              bg=BUTTON_BG_COLOR,
+                              fg=BUTTON_TEXT_COLOR,
+                              activebackground=BUTTON_PRESSED_BG_COLOR,
+                              activeforeground=BUTTON_TEXT_COLOR,
+                              border=BUTTON_BORDER_WIDTH)
 button_copy_morse.grid(column=3, row=3)
 
 button_play_audio = tk.Button(text=BUTTON_PLAY_TEXT,
-                              font=BUTTON_FONT,
-                              width=BUTTON_LARGE_WIDTH,
+                              font=FONT_BUTTON,
+                              width=BUTTON_WIDTH,
                               command=lambda: play_audio_file(audio_status=entry_audio_status.get()),
-                              bg=BG_COLOR,
-                              fg=STATIC_TEXT_COLOR,
-                              activebackground=BG_COLOR,
-                              activeforeground=STATIC_TEXT_COLOR)
-button_play_audio.grid(column=2,
-                       row=4,
-                       padx=BUTTON_X_PADD,
-                       columnspan=2)
+                              bg=BUTTON_BG_COLOR,
+                              fg=BUTTON_TEXT_COLOR,
+                              activebackground=BUTTON_PRESSED_BG_COLOR,
+                              activeforeground=BUTTON_TEXT_COLOR,
+                              border=BUTTON_BORDER_WIDTH)
+button_play_audio.grid(column=3, row=4)
 
 # Checkbox for deciding whether to produce the audio file
-audio_requested = tk.BooleanVar(value=VAL_OFF_CHECKBOX)  # Holds the current decision (bool), defaults to off (False)
+audio_requested = tk.BooleanVar(value=CHECKBOX_VAL_OFF)  # Holds the current decision (bool), defaults to off (False)
 
 checkbox_audio_request = tk.Checkbutton(text=CHECKBOX_TEXT,
                                         variable=audio_requested,
-                                        onvalue=VAL_ON_CHECKBOX,
-                                        offvalue=VAL_OFF_CHECKBOX,
+                                        onvalue=CHECKBOX_VAL_ON,
+                                        offvalue=CHECKBOX_VAL_OFF,
                                         bg=BG_COLOR,
                                         highlightthickness=0,
-                                        font=CHECKBOX_FONT,
+                                        font=FONT_CHECKBOX,
                                         fg=STATIC_TEXT_COLOR,
                                         activebackground=BG_COLOR,
                                         activeforeground=STATIC_TEXT_COLOR,

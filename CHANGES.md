@@ -1,8 +1,38 @@
-## [v0.4.1] -- 2024-07-18
-### Fixed
-- Eliminated illegally used parameter in the call to `os.exists()` in the `create_audio_file()` function.
+## [v0.5.0] -- 2024-07-18
+### Added
+- A new constant `READONLY_ENTRY_BG_COLOR` to hold the new color for the `entry_audio_status` widget background.
+- A new constant `ENTRY_AUDIO_STATUS_WIDTH` to hold the new width for the `entry_audio_status` widget.
+- A new constant `BUTTON_BORDER_WIDTH` to hold the new width for buttons.
+- A new constant `BUTTON_BG_COLOR` to hold the new background color for unpressed buttons.
+- A new constant `BUTTON_PRESSED_BG_COLOR` to hold the new background color for pressed buttons.
+- A screenshot of the app main window to the readme.
 
-## [v0.4.0] -- 2024-07-18
+### Complete UI overhaul
+- **Summary**: Completely overhauled the UI for improved user experience and accessibility.
+- **Key Changes**:
+  - Updated color palette to a modern scheme with a white background and Prussian Blue accents.
+  - Redesigned buttons to enhance visibility and interactivity.
+- **Detailed Changes**:
+  - Changed button colors to include a Prussian Blue background with white text for primary actions.
+  - Adjusted the layout to be more intuitive.
+- **Impact**:
+  - Enhanced contrast and legibility for users with visual impairments.
+
+### Other changes
+- Changed some docstrings, comments and variable names for clarity.
+
+### Fixed
+- Wrong dates in the changelog.
+- Some typos.
+
+### Removed
+- The `BUTTON_LARGE_WIDTH` constant as it's no longer needed.
+
+## [v0.4.1] -- 2024-07-17
+### Fixed
+- Eliminated an illegally used parameter in the call to `os.exists()` in the `create_audio_file()` function.
+
+## [v0.4.0] -- 2024-07-17
 ### Added
 - Created two directories: `modules` and `images`.
 - Added exception handling and error message if the logo can't be found.

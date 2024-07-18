@@ -1,14 +1,13 @@
 """
-This module contains all the global constants used by the
-Morse Code Translator application.
+This module contains all the global constants used by the application.
 
-It declares the app title, Morse code lookup dictionary, Tkinter style,
+It declares the app title, Morse code lookup dictionary, GUI style,
 output audio settings and regex patterns.
 """
 
 import re
 
-APP_TITLE: str = "Morse Code Translator and Audio Generator 0.4.1"
+APP_TITLE: str = "Morse Code Translator & Audio Generator v0.5.0"
 MORSE_CODE_DICT: dict = {"A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.",
                          "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.",
                          "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-",
@@ -20,10 +19,15 @@ MORSE_CODE_DICT: dict = {"A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": "
                          "$": "...-..-", "&": ".-..."}
 
 # Colors
-BG_COLOR: str = "#454679"  # Soft Indigo
-STATIC_TEXT_COLOR: str = "#FFC900"  # Tangerine Yellow
+BG_COLOR: str = "#FFF"  # White
+READONLY_ENTRY_BG_COLOR: str = "#C7C7C7"  # Very Light Gray
+BUTTON_BG_COLOR: str = "#003366"  # Prussian Blue
+BUTTON_PRESSED_BG_COLOR: str = "#0A2B55"  # Prussian Blue Shade
 
-# Images' filepaths, dimensions and padding
+STATIC_TEXT_COLOR: str = "#003366"  # Prussian Blue
+BUTTON_TEXT_COLOR: str = "#FFF"  # White
+
+# Images, Filepaths, Dimensions and Padding
 LOGO_FILEPATH: str = "images/app_logo.png"
 DEFAULT_AUDIO_OUTPUT_DIR: str = "output"
 DEFAULT_AUDIO_OUTPUT_FILE: str = "morse_code_audio.wav"
@@ -33,11 +37,13 @@ IMG_HEIGHT: int = 300
 
 PADD_X: int = 60
 PADD_Y: int = 60
-BUTTON_X_PADD: tuple[int, int] = (5, 0)
 
 # Buttons
-BUTTON_SMALL_WIDTH: int = 15
-BUTTON_LARGE_WIDTH: int = 31
+BUTTON_X_PADD: tuple[int, int] = (5, 0)
+
+BUTTON_WIDTH: int = 15
+BUTTON_BORDER_WIDTH: float = 1.0
+
 BUTTON_TRANSLATE_TO_MORSE_TEXT: str = "To Morse"
 BUTTON_TRANSLATE_TO_PLAIN_TEXT: str = "To Plain Text"
 BUTTON_COPY_TEXT: str = "Copy"
@@ -50,16 +56,17 @@ LABEL_AUDIO_STATUS_TEXT: str = "Audio Status:"
 
 # Checkbox
 CHECKBOX_TEXT: str = "Create Audio"
-VAL_ON_CHECKBOX: bool = True
-VAL_OFF_CHECKBOX: bool = False
+CHECKBOX_VAL_ON: bool = True
+CHECKBOX_VAL_OFF: bool = False
 
 # Entries
 ENTRY_WIDTH: int = 30
+ENTRY_AUDIO_STATUS_WIDTH: int = 52
 
 # Fonts
-LABEL_FONT: tuple[str, int, str] = ("Arial", 12, "bold")
-CHECKBOX_FONT: tuple[str, int, str] = ("Arial", 11, "bold")
-BUTTON_FONT: tuple[str, int, str] = ("Arial", 10, "bold")
+FONT_LABEL: tuple[str, int, str] = ("Arial", 11, "normal")
+FONT_CHECKBOX: tuple[str, int, str] = ("Arial", 11, "normal")
+FONT_BUTTON: tuple[str, int, str] = ("Arial", 10, "normal")
 
 # MessageBox
 MSGBOX_TITLE_SUCCESS: str = "Success"

@@ -1,6 +1,11 @@
-# Morse Code Translator and Audio Generator v0.4.1
+# Morse Code Translator & Audio Generator v0.5.0
 
 This project provides a GUI application that translates text into Morse code, and vice versa, generates audio files for the Morse code, and allows playback of these audio files.
+
+## Application Screenshot
+Here's a look at the newly designed user interface:
+
+![Main Window](images/app_screenshot.png)
 
 ## Features
 
@@ -47,9 +52,9 @@ python morse_code.py
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
+2. Create your Feature Branch
+3. Commit your Changes
+4. Push to the Branch
 5. Open a Pull Request
 
 ## License
