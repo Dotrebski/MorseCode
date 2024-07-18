@@ -1,3 +1,12 @@
+## [v0.6.0] -- 2024-07-19
+### Added
+- Two warning message constants for when the user inputs valid characters that are still meaningless to Morse code, (e.g., "----------").
+- A utility function `change_entry_text()` specialized in modifying entry widgets' texts while respecting the widgets' states ("normal"/"readonly").
+
+### Changed
+- Streamlined entry widgets' text modification. Functions that previously edited them, will now call the new utility function, instead.
+- Some docstrings and comments for clarity.
+
 ## [v0.5.0] -- 2024-07-18
 ### Added
 - A new constant `READONLY_ENTRY_BG_COLOR` to hold the new color for the `entry_audio_status` widget background.

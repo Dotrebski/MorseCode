@@ -1,5 +1,5 @@
 """
-Morse Code Translator & Audio Generator v0.5.0
+Morse Code Translator & Audio Generator v0.6.0
 
 This script provides a GUI application to translate text to Morse code, and vice versa,
 generate audio files for the Morse code, and play them back.
