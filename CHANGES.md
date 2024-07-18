@@ -1,4 +1,11 @@
-## [v0.6.0] -- 2024-07-19
+## [v0.7.0] -- 2024-07-19
+### Added
+- A regex pattern used in searching for and, optionally, removing illegal characters (unsupported by the pycw module) in plain text input.
+- A new messagebox message used to ask the user whether to automatically remove illegal characters before creating the audio file, or whether to skip the audio generation.
+- A check in the `create_audio_file()` function that searches the normalized_text argument for the above-mentioned illegal characters, and prompts the user to make the above-mentioned decision.
+- Some comments to clarify these additions.
+
+## [v0.6.0] -- 2024-07-18
 ### Added
 - Two warning message constants for when the user inputs valid characters that are still meaningless to Morse code, (e.g., "----------").
 - A utility function `change_entry_text()` specialized in modifying entry widgets' texts while respecting the widgets' states ("normal"/"readonly").

@@ -90,6 +90,21 @@ def create_audio_file(normalized_text: str, audio_status: tk.Entry) -> None:
         None
     """
 
+    # Check whether the normalized_text contains any chars unsupported
+    # by the pycw module.
+    if bool(re.search(pattern=PATT_SANITIZE_PLAIN_TEXT_INPUT, string=normalized_text)):
+
+        # If so, ask the user whether to automatically remove them
+        # from the text, or whether to abandon audio generation.
+        if msgbox.askyesno(title=MSGBOX_TITLE_CONFIRM, message=MSGBOX_MSG_TRANSLATE_TO_MORSE_CONFIRM):
+            normalized_text = re.sub(pattern=PATT_SANITIZE_PLAIN_TEXT_INPUT, repl="", string=normalized_text)
+
+        else:
+            global most_recent_audio_filepath
+            most_recent_audio_filepath = ""
+            change_entry_text(entry_to_change=audio_status)
+            return None
+
     # Incrementally, find the first unused audio filename to avoid
     # overwriting previous ones.
     counter: int = 0
@@ -119,7 +134,6 @@ def create_audio_file(normalized_text: str, audio_status: tk.Entry) -> None:
 
     else:
         # Save the audio filepath as the most recent one
-        global most_recent_audio_filepath
         most_recent_audio_filepath = audio_filepath
         change_entry_text(entry_to_change=audio_status, change_to=f"{AUDIO_READY_MESSAGE} {most_recent_audio_filepath}")
 

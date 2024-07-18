@@ -7,7 +7,7 @@ output audio settings and regex patterns.
 
 import re
 
-APP_TITLE: str = "Morse Code Translator & Audio Generator v0.6.0"
+APP_TITLE: str = "Morse Code Translator & Audio Generator v0.7.0"
 MORSE_CODE_DICT: dict = {"A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.",
                          "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.",
                          "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-",
@@ -70,6 +70,7 @@ FONT_BUTTON: tuple[str, int, str] = ("Arial", 10, "normal")
 
 # MessageBox
 MSGBOX_TITLE_SUCCESS: str = "Success"
+MSGBOX_TITLE_CONFIRM: str = "Confirmation"
 MSGBOX_TITLE_WARNING: str = "Warning"
 MSGBOX_TITLE_ERROR: str = "Error"
 
@@ -82,15 +83,19 @@ MSGBOX_MSG_PLAY_WARNING: str = "There is nothing to play (yet)."
 MSGBOX_MSG_PLAY_FILE_NF_ERROR: str = "The file that has just been created doesn't seem to exist anymore."
 
 MSGBOX_MSG_TRANSLATE_WARNING: str = "There is nothing to translate (yet)."
-MSGBOX_MSG_TRANSLATE_TO_MORSE_ERROR: str = ("The application doesn't have permission to save files to the current "
-                                            "location.")
+MSGBOX_MSG_TRANSLATE_TO_MORSE_ERROR: str = "The application doesn't have permission to save files to the current " \
+                                           "location."
 MSGBOX_MSG_TRANSLATE_TO_PLAIN_WARNING: str = "You may only use the characters: .-/ and spaces in your Morse code input."
 
-MSGBOX_MSG_MEANINGLESS_TO_MORSE_WARNING: str = ("The input contains characters that cannot be translated into Morse"
-                                                " code. Please, use only letters, numbers, and punctuation marks.")
-MSGBOX_MSG_MEANINGLESS_TO_PLAIN_WARNING: str = ("The input contains a sequence of valid symbols that do not correspond"
-                                                " to any Morse code symbol. Please, use only dots, dashes,"
-                                                "forward slashes, and spaces.")
+MSGBOX_MSG_MEANINGLESS_TO_MORSE_WARNING: str = "The input contains characters that cannot be translated into Morse" \
+                                               " code. Please, use only letters, numbers, and punctuation marks."
+MSGBOX_MSG_MEANINGLESS_TO_PLAIN_WARNING: str = "The input contains a sequence of valid symbols that do not correspond" \
+                                               " to any Morse code symbol. Please, use only dots, dashes," \
+                                               "forward slashes, and spaces."
+
+MSGBOX_MSG_TRANSLATE_TO_MORSE_CONFIRM: str = "Your input contains characters that are unsupported for audio" \
+                                             " generation (~`<>\\|*^%@#). Would you like to proceed and have them" \
+                                             " removed automatically?"
 
 # Audio Settings
 AUDIO_TONE: int = 800
@@ -102,6 +107,10 @@ AUDIO_READY_MESSAGE: str = "READY:"
 # Regex Patterns
 PATT_SANITIZE_MORSE_CODE_INPUT = re.compile(r"""
     [.\-/ ]+   # Match one or more of the characters: dot, dash, slash, space
+""", re.VERBOSE)
+
+PATT_SANITIZE_PLAIN_TEXT_INPUT = re.compile(r"""
+    [~`<>\\|*^%@#]+    # Match any of these characters (they are unsupported by the pycw module)
 """, re.VERBOSE)
 
 PATT_REDUCE_SPACES_MORSE_CODE_INPUT = re.compile(r"""
