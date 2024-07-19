@@ -124,6 +124,18 @@ button_play_audio = tk.Button(text=BUTTON_PLAY_TEXT,
                               border=BUTTON_BORDER_WIDTH)
 button_play_audio.grid(column=3, row=4)
 
+button_clear_all = tk.Button(text=BUTTON_CLEAR_TEXT,
+                             font=FONT_BUTTON,
+                             width=BUTTON_WIDTH,
+                             command=lambda: clear_all(entry_plain_text_io, entry_morse_code_io,
+                                                       entry_audio_status),
+                             bg=BUTTON_BG_COLOR,
+                             fg=BUTTON_TEXT_COLOR,
+                             activebackground=BUTTON_PRESSED_BG_COLOR,
+                             activeforeground=BUTTON_TEXT_COLOR,
+                             border=BUTTON_BORDER_WIDTH)
+button_clear_all.grid(column=1, row=5, columnspan=2)
+
 # Checkbox for deciding whether to produce the audio file
 audio_requested = tk.BooleanVar(value=CHECKBOX_VAL_OFF)  # Holds the current decision (bool), defaults to off (False)
 

@@ -7,7 +7,7 @@ output audio settings and regex patterns.
 
 import re
 
-APP_TITLE: str = "Morse Code Translator & Audio Generator v0.7.0"
+APP_TITLE: str = "Morse Code Translator & Audio Generator v0.8.0"
 MORSE_CODE_DICT: dict = {"A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.",
                          "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.",
                          "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-",
@@ -48,6 +48,7 @@ BUTTON_TRANSLATE_TO_MORSE_TEXT: str = "To Morse"
 BUTTON_TRANSLATE_TO_PLAIN_TEXT: str = "To Plain Text"
 BUTTON_COPY_TEXT: str = "Copy"
 BUTTON_PLAY_TEXT: str = "Play Audio"
+BUTTON_CLEAR_TEXT: str = "Clear All"
 
 # Labels
 LABEL_PLAIN_TEXT_IO_TEXT: str = "Plain Text:"
@@ -106,7 +107,7 @@ AUDIO_READY_MESSAGE: str = "READY:"
 
 # Regex Patterns
 PATT_SANITIZE_MORSE_CODE_INPUT = re.compile(r"""
-    [.\-/ ]+   # Match one or more of the characters: dot, dash, slash, space
+    [.\-/ ]+   # Match one or more of these characters (only they can be translated from Morse code to plain text)
 """, re.VERBOSE)
 
 PATT_SANITIZE_PLAIN_TEXT_INPUT = re.compile(r"""

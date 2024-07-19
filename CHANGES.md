@@ -1,3 +1,16 @@
+## [v0.8.0] -- 2024-07-20
+### Added
+- A utility function `change_most_recent_filepath()` that, as the name suggests, sets the global variable to a new value.
+- A utility function `clear_all()` that will clear all input/output fields in the app (and will call the above-mentioned function, too).
+- A new button `button_clear_all` and the related UI functionality.
+- A main function in `morse_code.py` that will only be called if the file is run directly.
+- A comment for the global variable `most_recent_audio_filepath`.
+
+### Changed
+- Functions will now call `change_most_recent_filepath()` instead of writing to `most_recent_audio_filepath` themselves.
+- Regex patterns verbose descriptions for clarity.
+- Module docstrings in `functions.py` for readibility.
+
 ## [v0.7.0] -- 2024-07-19
 ### Added
 - A regex pattern used in searching for and, optionally, removing illegal characters (unsupported by the pycw module) in plain text input.

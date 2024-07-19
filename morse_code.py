@@ -1,5 +1,5 @@
 """
-Morse Code Translator & Audio Generator v0.7.0
+Morse Code Translator & Audio Generator v0.8.0
 
 This script provides a GUI application to translate text to Morse code, and vice versa,
 generate audio files for the Morse code, and play them back.
@@ -18,5 +18,17 @@ No command-line arguments are required.
 
 import modules.UI as UI
 
-# Entering the main loop
-UI.tk.mainloop()
+
+def main() -> None:
+    """The main function of the app.
+
+    Returns:
+        None
+    """
+
+    # Entering the main loop
+    UI.tk.mainloop()
+
+
+if __name__ == "__main__":
+    main()

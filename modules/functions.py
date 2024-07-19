@@ -1,8 +1,15 @@
 """
 This module contains all the functions used by the application.
 
-It defines: play_audio_file, create_audio_file,
-translate_to_morse_code, translate_to_plain_text & copy_to_clipboard.
+It defines:
+1. play_audio_file(),
+2. change_entry_text(),
+3. change_most_recent(),
+4. create_audio_file(),
+5. translate_to_morse_code(),
+6. translate_to_plain_text(),
+7. copy_to_clipboard(),
+8. and clear_all().
 """
 
 import tkinter as tk
@@ -16,6 +23,7 @@ import pyperclip
 import pycw
 from modules.globals import *
 
+# Path to the most recently generated audio file
 most_recent_audio_filepath: str = ""
 
 
@@ -76,6 +84,22 @@ def change_entry_text(entry_to_change: tk.Entry, change_to: str = "") -> None:
         entry_to_change.config(state="readonly")
 
 
+def change_most_recent_filepath(change_to: str = "") -> None:
+    """A utility function to change the most_recent_filepath
+    global variable.
+
+    Args:
+        change_to: str: The value to assign to the global variable.
+        Defaults to an empty str.
+
+    Returns:
+        None
+    """
+
+    global most_recent_audio_filepath
+    most_recent_audio_filepath = change_to
+
+
 def create_audio_file(normalized_text: str, audio_status: tk.Entry) -> None:
     """Generate the Morse code audio file from a normalized text.
 
@@ -100,8 +124,7 @@ def create_audio_file(normalized_text: str, audio_status: tk.Entry) -> None:
             normalized_text = re.sub(pattern=PATT_SANITIZE_PLAIN_TEXT_INPUT, repl="", string=normalized_text)
 
         else:
-            global most_recent_audio_filepath
-            most_recent_audio_filepath = ""
+            change_most_recent_filepath()
             change_entry_text(entry_to_change=audio_status)
             return None
 
@@ -134,7 +157,7 @@ def create_audio_file(normalized_text: str, audio_status: tk.Entry) -> None:
 
     else:
         # Save the audio filepath as the most recent one
-        most_recent_audio_filepath = audio_filepath
+        change_most_recent_filepath(change_to=audio_filepath)
         change_entry_text(entry_to_change=audio_status, change_to=f"{AUDIO_READY_MESSAGE} {most_recent_audio_filepath}")
 
 
@@ -180,8 +203,7 @@ def translate_to_morse_code(user_plain_text: str, audio_request: bool, audio_sta
             # any text in the most_recent_audio_filepath
             # and in audio_status, then display a warning
             # about the meaningless sequence in the input.
-            global most_recent_audio_filepath
-            most_recent_audio_filepath = ""
+            change_most_recent_filepath()
             change_entry_text(entry_to_change=audio_status)
             msgbox.showwarning(title=MSGBOX_TITLE_WARNING, message=MSGBOX_MSG_MEANINGLESS_TO_MORSE_WARNING)
 
@@ -241,14 +263,13 @@ def translate_to_plain_text(user_morse_code_text: str, audio_request: bool,
             # any text in the most_recent_audio_filepath
             # and in audio_status, then display a warning
             # about the meaningless sequence in the input.
-            global most_recent_audio_filepath
-            most_recent_audio_filepath = ""
+            change_most_recent_filepath()
             change_entry_text(entry_to_change=audio_status)
             msgbox.showwarning(title=MSGBOX_TITLE_WARNING, message=MSGBOX_MSG_MEANINGLESS_TO_PLAIN_WARNING)
 
 
 def copy_to_clipboard(text_to_copy: str) -> None:
-    """A utility function to copy the arg to the clipboard.
+    """A utility function that copies the arg to the clipboard.
 
     Args:
         text_to_copy: str: String from an entry widget.
@@ -258,7 +279,7 @@ def copy_to_clipboard(text_to_copy: str) -> None:
     """
 
     if text_to_copy:
-        # Copy the text to the system clipboard and display
+        # Copy text to the system clipboard and display
         # a success message to the user.
         pyperclip.copy(text=text_to_copy)
         msgbox.showinfo(title=MSGBOX_TITLE_SUCCESS, message=MSGBOX_MSG_COPY_SUCCESS)
@@ -266,3 +287,20 @@ def copy_to_clipboard(text_to_copy: str) -> None:
     else:
         # Display a warning if there is no input
         msgbox.showwarning(title=MSGBOX_TITLE_WARNING, message=MSGBOX_MSG_COPY_WARNING)
+
+
+def clear_all(*args: tk.Entry) -> None:
+    """Clears all text input and output fields.
+
+    Args:
+        args: tk.Entry: A variable number of entry widgets to clear
+                        all text from.
+
+    Returns:
+          None
+    """
+
+    for widget in args:
+        change_entry_text(entry_to_change=widget)
+
+    change_most_recent_filepath()
