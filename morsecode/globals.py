@@ -7,7 +7,7 @@ output audio settings and regex patterns.
 
 import re
 
-APP_TITLE: str = "Morse Code Translator & Audio Generator v0.8.0"
+APP_TITLE: str = "Morse Code Translator & Audio Generator v0.9.0"
 MORSE_CODE_DICT: dict = {"A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.",
                          "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.",
                          "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-",
@@ -21,8 +21,12 @@ MORSE_CODE_DICT: dict = {"A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": "
 # Colors
 BG_COLOR: str = "#FFF"  # White
 READONLY_ENTRY_BG_COLOR: str = "#C7C7C7"  # Very Light Gray
-BUTTON_BG_COLOR: str = "#003366"  # Prussian Blue
-BUTTON_PRESSED_BG_COLOR: str = "#0A2B55"  # Prussian Blue Shade
+
+BUTTON_PRIMARY_BG_COLOR: str = "#003366"  # Prussian Blue
+BUTTON_PRIMARY_PRESSED_BG_COLOR: str = "#0A2B55"  # Prussian Blue shade
+
+BUTTON_SECOND_BG_COLOR: str = "#3a507e"  # Prussian Blue tint
+BUTTON_SECOND_PRESSED_BG_COLOR: str = "#003366"  # Prussian Blue
 
 STATIC_TEXT_COLOR: str = "#003366"  # Prussian Blue
 BUTTON_TEXT_COLOR: str = "#FFF"  # White
@@ -36,7 +40,7 @@ IMG_WIDTH: int = 400
 IMG_HEIGHT: int = 300
 
 PADD_X: int = 60
-PADD_Y: int = 60
+PADD_Y: int = 10
 
 # Buttons
 BUTTON_X_PADD: tuple[int, int] = (5, 0)
@@ -55,6 +59,12 @@ LABEL_PLAIN_TEXT_IO_TEXT: str = "Plain Text:"
 LABEL_MORSE_CODE_IO_TEXT: str = "Morse Code:"
 LABEL_AUDIO_STATUS_TEXT: str = "Audio Status:"
 
+LABEL_INFO_Y_PADD: tuple[int, int] = (50, 10)
+LABEL_INFO_TEXT: str = "Developed by Dominik Otrębski\n" \
+                       "For updates and feedback, visit github.com/Dotrebski/MorseCode\n" \
+                       "Licensed under the BSD-3-Clause License. See LICENSE for details.\n" \
+                       "© 2024 Dominik Otrębski. All rights reserved."
+
 # Checkbox
 CHECKBOX_TEXT: str = "Create Audio"
 CHECKBOX_VAL_ON: bool = True
@@ -68,33 +78,35 @@ ENTRY_AUDIO_STATUS_WIDTH: int = 52
 FONT_LABEL: tuple[str, int, str] = ("Arial", 11, "normal")
 FONT_CHECKBOX: tuple[str, int, str] = ("Arial", 11, "normal")
 FONT_BUTTON: tuple[str, int, str] = ("Arial", 10, "normal")
+FONT_INFO: tuple[str, int, str] = ("Arial", 10, "normal")
 
 # MessageBox
-MSGBOX_TITLE_SUCCESS: str = "Success"
-MSGBOX_TITLE_CONFIRM: str = "Confirmation"
-MSGBOX_TITLE_WARNING: str = "Warning"
-MSGBOX_TITLE_ERROR: str = "Error"
+MESSAGEBOX_TITLE_SUCCESS: str = "Success"
+MESSAGEBOX_TITLE_CONFIRM: str = "Confirmation"
+MESSAGEBOX_TITLE_WARNING: str = "Warning"
+MESSAGEBOX_TITLE_ERROR: str = "Error"
 
-MSGBOX_MSG_LOGO_ERROR: str = "The logo couldn't be loaded."
+MESSAGEBOX_MSG_LOGO_ERROR: str = "The logo couldn't be loaded."
 
-MSGBOX_MSG_COPY_SUCCESS: str = "The text has been successfully copied to your clipboard."
-MSGBOX_MSG_COPY_WARNING: str = "There is nothing to copy (yet)."
+MESSAGEBOX_MSG_COPY_SUCCESS: str = "The text has been successfully copied to your clipboard."
+MESSAGEBOX_MSG_COPY_WARNING: str = "There is nothing to copy (yet)."
 
-MSGBOX_MSG_PLAY_WARNING: str = "There is nothing to play (yet)."
-MSGBOX_MSG_PLAY_FILE_NF_ERROR: str = "The file that has just been created doesn't seem to exist anymore."
+MESSAGEBOX_MSG_PLAY_WARNING: str = "There is nothing to play (yet)."
+MESSAGEBOX_MSG_PLAY_FILE_NF_ERROR: str = "The file that has just been created doesn't seem to exist anymore."
 
-MSGBOX_MSG_TRANSLATE_WARNING: str = "There is nothing to translate (yet)."
-MSGBOX_MSG_TRANSLATE_TO_MORSE_ERROR: str = "The application doesn't have permission to save files to the current " \
+MESSAGEBOX_MSG_TRANSLATE_WARNING: str = "There is nothing to translate (yet)."
+MESSAGEBOX_MSG_TRANSLATE_TO_MORSE_ERROR: str = "The application doesn't have permission to save files to the current " \
                                            "location."
-MSGBOX_MSG_TRANSLATE_TO_PLAIN_WARNING: str = "You may only use the characters: .-/ and spaces in your Morse code input."
+MESSAGEBOX_MSG_TRANSLATE_TO_PLAIN_WARNING: str = "You may only use the characters: .-/ and spaces " \
+                                                 "in your Morse code input."
 
-MSGBOX_MSG_MEANINGLESS_TO_MORSE_WARNING: str = "The input contains characters that cannot be translated into Morse" \
-                                               " code. Please, use only letters, numbers, and punctuation marks."
-MSGBOX_MSG_MEANINGLESS_TO_PLAIN_WARNING: str = "The input contains a sequence of valid symbols that do not correspond" \
-                                               " to any Morse code symbol. Please, use only dots, dashes," \
+MESSAGEBOX_MSG_MEANINGLESS_TO_MORSE_WARNING: str = "The input contains characters that cannot be translated into " \
+                                               "Morse code. Please, use only letters, numbers, and punctuation marks."
+MESSAGEBOX_MSG_MEANINGLESS_TO_PLAIN_WARNING: str = "The input contains a sequence of valid symbols that do not " \
+                                               "correspond to any Morse code symbol. Please, use only dots, dashes," \
                                                "forward slashes, and spaces."
 
-MSGBOX_MSG_TRANSLATE_TO_MORSE_CONFIRM: str = "Your input contains characters that are unsupported for audio" \
+MESSAGEBOX_MSG_TRANSLATE_TO_MORSE_CONFIRM: str = "Your input contains characters that are unsupported for audio" \
                                              " generation (~`<>\\|*^%@#). Would you like to proceed and have them" \
                                              " removed automatically?"
 

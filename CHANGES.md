@@ -1,3 +1,20 @@
+## [v0.9.0] -- 2024-07-20
+### Added
+- Added a new button color for utility buttons.
+- Added a new label and font for contact and license information.
+
+### Changed
+- Made all imports explicit.
+- Renamed the modules directory to `morsecode`.
+- Renamed the entry point to `mcode.py`.
+- Applied the button bg color -- used so far for all buttons -- only to primary buttons.
+- Decreased the Y-padding of the canvas to `10`.
+- Changes the prefix of messagebox-related constants from `MSGBOX` to `MESSAGEBOX`.
+- Minor changes in docstrings and comments for clarity and brevity.
+
+### Removed
+- Removed the unnecessary main function from `mcode.py`.
+
 ## [v0.8.0] -- 2024-07-20
 ### Added
 - A utility function `change_most_recent_filepath()` that, as the name suggests, sets the global variable to a new value.
