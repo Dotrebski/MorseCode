@@ -14,7 +14,7 @@ import globals
 # Root window setup with padding and bg color
 root = tk.Tk()
 root.title(string=globals.APP_TITLE)
-root.config(padx=globals.PADD_X, pady=globals.PADD_Y, bg=globals.BG_COLOR)
+root.config(padx=globals.ROOT_PAD_X, pady=globals.ROOT_PAD_Y, bg=globals.ROOT_BG_COLOR)
 
 # Canvas for displaying the application logo
 canvas = tk.Canvas(width=globals.IMG_WIDTH, height=globals.IMG_HEIGHT)
@@ -28,33 +28,33 @@ except FileNotFoundError:
 else:
     # Center the logo image on the canvas
     canvas.create_image(globals.IMG_WIDTH // 2, globals.IMG_HEIGHT // 2, image=app_logo)
-    canvas.config(bg=globals.BG_COLOR, highlightthickness=0)
+    canvas.config(bg=globals.ROOT_BG_COLOR, highlightthickness=0)
     canvas.grid(column=0, row=0, columnspan=4)
 
 # Labels for i/o entry widgets with custom font and color
 label_plain_text_io = tk.Label(text=globals.LABEL_PLAIN_TEXT_IO_TEXT,
                                fg=globals.STATIC_TEXT_COLOR,
-                               bg=globals.BG_COLOR,
+                               bg=globals.ROOT_BG_COLOR,
                                font=globals.FONT_LABEL)
 label_plain_text_io.grid(column=0, row=2)
 
 label_morse_code_io = tk.Label(text=globals.LABEL_MORSE_CODE_IO_TEXT,
                                fg=globals.STATIC_TEXT_COLOR,
-                               bg=globals.BG_COLOR,
+                               bg=globals.ROOT_BG_COLOR,
                                font=globals.FONT_LABEL)
 label_morse_code_io.grid(column=0, row=3)
 
 label_audio_status = tk.Label(text=globals.LABEL_AUDIO_STATUS_TEXT,
                               fg=globals.STATIC_TEXT_COLOR,
-                              bg=globals.BG_COLOR,
+                              bg=globals.ROOT_BG_COLOR,
                               font=globals.FONT_LABEL)
 label_audio_status.grid(column=0, row=4)
 
 label_info = tk.Label(text=globals.LABEL_INFO_TEXT,
                       fg=globals.STATIC_TEXT_COLOR,
-                      bg=globals.BG_COLOR,
+                      bg=globals.ROOT_BG_COLOR,
                       font=globals.FONT_INFO)
-label_info.grid(column=0, row=6, columnspan=4, pady=globals.LABEL_INFO_Y_PADD)
+label_info.grid(column=0, row=6, columnspan=4, pady=globals.LABEL_INFO_PAD_X)
 
 # Entry widgets for plain text i/o, Morse code i/o,
 # and audio status with custom width
@@ -85,7 +85,7 @@ button_translate_to_morse = tk.Button(text=globals.BUTTON_TRANSLATE_TO_MORSE_TEX
                                       activebackground=globals.BUTTON_PRIMARY_PRESSED_BG_COLOR,
                                       activeforeground=globals.BUTTON_TEXT_COLOR,
                                       border=globals.BUTTON_BORDER_WIDTH)
-button_translate_to_morse.grid(column=2, row=2, padx=globals.BUTTON_X_PADD)
+button_translate_to_morse.grid(column=2, row=2, padx=globals.BUTTON_PAD_X)
 
 button_copy_plain = tk.Button(text=globals.BUTTON_COPY_TEXT,
                               font=globals.FONT_BUTTON,
@@ -111,7 +111,7 @@ button_translate_to_plain = tk.Button(text=globals.BUTTON_TRANSLATE_TO_PLAIN_TEX
                                       activebackground=globals.BUTTON_PRIMARY_PRESSED_BG_COLOR,
                                       activeforeground=globals.BUTTON_TEXT_COLOR,
                                       border=globals.BUTTON_BORDER_WIDTH)
-button_translate_to_plain.grid(column=2, row=3, padx=globals.BUTTON_X_PADD)
+button_translate_to_plain.grid(column=2, row=3, padx=globals.BUTTON_PAD_X)
 
 button_copy_morse = tk.Button(text=globals.BUTTON_COPY_TEXT,
                               font=globals.FONT_BUTTON,
@@ -148,17 +148,17 @@ button_clear_all = tk.Button(text=globals.BUTTON_CLEAR_TEXT,
 button_clear_all.grid(column=1, row=5, columnspan=2)
 
 # Checkbox for deciding whether to produce the audio file
-audio_requested = tk.BooleanVar(value=globals.CHECKBOX_VAL_OFF)  # Holds the current decision (bool), defaults to False
+audio_requested = tk.BooleanVar(value=globals.CHECKBOX_VAL_OFF)  # Holds the current decision (bool), defaults to off
 
 checkbox_audio_request = tk.Checkbutton(text=globals.CHECKBOX_TEXT,
                                         variable=audio_requested,
                                         onvalue=globals.CHECKBOX_VAL_ON,
                                         offvalue=globals.CHECKBOX_VAL_OFF,
-                                        bg=globals.BG_COLOR,
+                                        bg=globals.ROOT_BG_COLOR,
                                         highlightthickness=0,
                                         font=globals.FONT_CHECKBOX,
                                         fg=globals.STATIC_TEXT_COLOR,
-                                        activebackground=globals.BG_COLOR,
+                                        activebackground=globals.ROOT_BG_COLOR,
                                         activeforeground=globals.STATIC_TEXT_COLOR,
-                                        selectcolor=globals.BG_COLOR)
+                                        selectcolor=globals.ROOT_BG_COLOR)
 checkbox_audio_request.grid(column=1, row=1)

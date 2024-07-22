@@ -1,3 +1,32 @@
+## [v1.0.0] -- 2024-07-22
+### Added
+- The directory `tests`.
+- The file `test_audio.wav` for testing the `play_audio_create` function.
+- Two basic test suites (`tests_primary.py` and `tests_utility.py`) for the project.
+- The file `py_test.ini` containing basic configuration for Pytest.
+- The file `requirements-dev.txt`.
+- A number of error message constants for `tkinter.messagebox.showerror`.
+- A number of `try-except` blocks to functions in `functions.py` for better handling of invalid arguments.
+- An intermediary variable to hold the sanitization check in the `translate_to_plain_text` function for readability.
+
+### Changed
+- Raised the minimal required version of Python from **3.7** to **3.9** (as determined by Vermin).
+- Renamed a significant number of constants in `globals.py` for better uniformity.
+- Introduced subsections for a better organization of error message constants in `globals.py`.
+- Added visual cues that should help in determining sections and subsections of `globals.py`.
+- Changed docstrings and comments in `functions.py` for improved readability.
+
+### Removed
+- The unnecessary casting of `re.search` return object to `bool` from the `create_audio_file` function.
+- Eliminated several unnecessarily complex conditional statements from functions in `functions.py`.
+
+### Fixed
+- A defect allowing the function `translate_to_morse_code` to pass an empty string to `create_audio_file`.
+
+### Upcoming Changes
+- Current test suites will be split into proper unit and integration tests for improved coverage and maintainability.
+- Manual test cases covering integration tests will be added to the `tests` directory.
+
 ## [v0.9.0] -- 2024-07-20
 ### Added
 - Added a new button color for utility buttons.

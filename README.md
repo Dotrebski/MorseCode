@@ -1,4 +1,4 @@
-# Morse Code Translator & Audio Generator v0.9.0
+# Morse Code Translator & Audio Generator v1.0.0
 
 This script provides a GUI application that translates text into Morse code, and vice versa, generates audio files for the Morse code, and allows playback of these audio files.
 
@@ -13,18 +13,19 @@ Here's a look at the newly designed user interface:
 - Translate Morse code to text.
 - Generate Morse code audio files (.wav format).
 - Play Morse code audio directly from the application.
-- Copy text outputs to the clipboard.
+- Copy text outputs to the system clipboard.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Python 3.7 or higher
+- Python 3.9 or higher (as determined by [Vermin](https://github.com/netromdk/vermin))
 - Tkinter
 - Pyperclip
 - unidecode
 - pycw
 - playsound3
+- Pytest (for running tests)
 
 ### Installation
 
@@ -66,3 +67,4 @@ Distributed under the BSD-3 License. See [LICENSE](LICENSE) for more information
 * [playsound3](https://github.com/sjmikler/playsound3)
 * [unidecode](https://github.com/avian2/unidecode)
 * [Pyperclip](https://github.com/asweigart/pyperclip)
+* [Pytest](https://github.com/pytest-dev/pytest)
