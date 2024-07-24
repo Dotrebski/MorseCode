@@ -13,8 +13,8 @@ import os
 import tkinter as tk
 from tkinter import messagebox
 import pytest
-from morsecode import functions
-from morsecode import globals
+import morsecode.functions as functions
+import morsecode.globals as global_const
 
 # Globals
 TK_MESSAGE_ERROR: str = "tkinter.messagebox.showerror"
@@ -50,8 +50,8 @@ class Test_PlayAudioFile:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_PLAY_WRONG_ARG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_PLAY_WRONG_ARG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -74,8 +74,8 @@ class Test_PlayAudioFile:
         """
 
         def mock_showwarning(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_WARNING
-            assert message == globals.MESSAGEBOX_MSG_PLAY_WARNING
+            assert title == global_const.MESSAGEBOX_TITLE_WARNING
+            assert message == global_const.MESSAGEBOX_MSG_PLAY_WARNING
             self.messagebox_called = True
 
         original_showwarning = messagebox.showwarning
@@ -111,8 +111,8 @@ class Test_CreateAudioFile:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_CREATE_AUDIO_FIRST_ARG_WRONG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_CREATE_AUDIO_FIRST_ARG_WRONG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -135,8 +135,8 @@ class Test_CreateAudioFile:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_CREATE_AUDIO_SECOND_ARG_WRONG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_CREATE_AUDIO_SECOND_ARG_WRONG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -164,8 +164,8 @@ class Test_CreateAudioFile:
         """
 
         def mock_askyesno(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_CONFIRM
-            assert message == globals.MESSAGEBOX_MSG_AUTO_CLEANUP_CONFIRM
+            assert title == global_const.MESSAGEBOX_TITLE_CONFIRM
+            assert message == global_const.MESSAGEBOX_MSG_AUTO_CLEANUP_CONFIRM
             self.messagebox_called = True
             return False
 
@@ -206,15 +206,15 @@ class Test_CreateAudioFile:
         """
 
         def mock_askyesno(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_CONFIRM
-            assert message == globals.MESSAGEBOX_MSG_AUTO_CLEANUP_CONFIRM
+            assert title == global_const.MESSAGEBOX_TITLE_CONFIRM
+            assert message == global_const.MESSAGEBOX_MSG_AUTO_CLEANUP_CONFIRM
             self.messagebox_called = True
             return True
 
         original_askyesno = messagebox.askyesno
         messagebox.askyesno = mock_askyesno
 
-        audio_filepath: str = f"{globals.DEFAULT_AUDIO_OUTPUT_DIR}/{globals.DEFAULT_AUDIO_OUTPUT_FILE}"
+        audio_filepath: str = f"{global_const.DEFAULT_AUDIO_OUTPUT_DIR}/{global_const.DEFAULT_AUDIO_OUTPUT_FILE}"
         invalid_text: str = "@test#"
         audio_status: tk.Entry = tk.Entry(tk_root)
         audio_status.insert(index=0, string=TEST_TEXT)
@@ -234,7 +234,7 @@ class Test_CreateAudioFile:
         assert functions.most_recent_audio_filepath == audio_filepath, ("The variable most_recent_audio_filepath wasn't"
                                                                         " set to audio_filepath'.")
 
-        ready_message: str = f"{globals.AUDIO_READY_MESSAGE} {audio_filepath}"
+        ready_message: str = f"{global_const.AUDIO_READY_MESSAGE} {audio_filepath}"
         assert audio_status.get() == ready_message, "The entry audio_status wasn't set to ready_message."
 
     def test_happy_path(self, tk_root) -> None:
@@ -248,7 +248,7 @@ class Test_CreateAudioFile:
               None
         """
 
-        audio_filepath: str = f"{globals.DEFAULT_AUDIO_OUTPUT_DIR}/{globals.DEFAULT_AUDIO_OUTPUT_FILE}"
+        audio_filepath: str = f"{global_const.DEFAULT_AUDIO_OUTPUT_DIR}/{global_const.DEFAULT_AUDIO_OUTPUT_FILE}"
         valid_text: str = TEST_TEXT
         audio_status: tk.Entry = tk.Entry(tk_root)
         audio_status.insert(index=0, string=TEST_TEXT)
@@ -266,7 +266,7 @@ class Test_CreateAudioFile:
         assert functions.most_recent_audio_filepath == audio_filepath, \
             "The variable most_recent_audio_filepath wasn't set to audio_filepath'."
 
-        ready_message: str = f"{globals.AUDIO_READY_MESSAGE} {audio_filepath}"
+        ready_message: str = f"{global_const.AUDIO_READY_MESSAGE} {audio_filepath}"
         assert audio_status.get() == ready_message, "The entry audio_status wasn't set to ready_message."
 
 
@@ -291,8 +291,8 @@ class Test_TranslateToMorseCode:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_TO_MORSE_FIRST_ARG_WRONG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_TO_MORSE_FIRST_ARG_WRONG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -321,8 +321,8 @@ class Test_TranslateToMorseCode:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_TO_MORSE_SECOND_ARG_WRONG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_TO_MORSE_SECOND_ARG_WRONG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -351,8 +351,8 @@ class Test_TranslateToMorseCode:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_TO_MORSE_THIRD_ARG_WRONG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_TO_MORSE_THIRD_ARG_WRONG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -381,8 +381,8 @@ class Test_TranslateToMorseCode:
          """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_TO_MORSE_FOURTH_ARG_WRONG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_TO_MORSE_FOURTH_ARG_WRONG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -411,8 +411,8 @@ class Test_TranslateToMorseCode:
          """
 
         def mock_showwarning(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_WARNING
-            assert message == globals.MESSAGEBOX_MSG_NOTHING_TO_TRANSLATE_WARNING
+            assert title == global_const.MESSAGEBOX_TITLE_WARNING
+            assert message == global_const.MESSAGEBOX_MSG_NOTHING_TO_TRANSLATE_WARNING
             self.messagebox_called = True
 
         original_showwarning = messagebox.showwarning
@@ -445,8 +445,8 @@ class Test_TranslateToMorseCode:
          """
 
         def mock_showwarning(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_WARNING
-            assert message == globals.MESSAGEBOX_MSG_MEANINGLESS_INPUT_WARNING
+            assert title == global_const.MESSAGEBOX_TITLE_WARNING
+            assert message == global_const.MESSAGEBOX_MSG_MEANINGLESS_INPUT_WARNING
             self.messagebox_called = True
 
         original_showwarning = messagebox.showwarning
@@ -487,7 +487,7 @@ class Test_TranslateToMorseCode:
 
         expected_morse_code: str = "..--- / ... . .- ..."  # "2 SEAS"
 
-        audio_filepath: str = f"{globals.DEFAULT_AUDIO_OUTPUT_DIR}/{globals.DEFAULT_AUDIO_OUTPUT_FILE}"
+        audio_filepath: str = f"{global_const.DEFAULT_AUDIO_OUTPUT_DIR}/{global_const.DEFAULT_AUDIO_OUTPUT_FILE}"
         output_entry = tk.Entry(tk_root)
         output_entry.insert(index=0, string=TEST_TEXT)
         output_entry.pack()
@@ -514,7 +514,7 @@ class Test_TranslateToMorseCode:
         assert functions.most_recent_audio_filepath == audio_filepath, \
                "The variable most_recent_audio_filepath wasn't set to the generated audio file filepath."
 
-        ready_message: str = f"{globals.AUDIO_READY_MESSAGE} {audio_filepath}"
+        ready_message: str = f"{global_const.AUDIO_READY_MESSAGE} {audio_filepath}"
         assert audio_status.get() == ready_message, "audio_status text didn't match ready_message."
 
 
@@ -539,8 +539,8 @@ class Test_TranslateToPlainText:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_TO_PLAIN_FIRST_ARG_WRONG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_TO_PLAIN_FIRST_ARG_WRONG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -569,8 +569,8 @@ class Test_TranslateToPlainText:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_TO_PLAIN_SECOND_ARG_WRONG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_TO_PLAIN_SECOND_ARG_WRONG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -587,21 +587,18 @@ class Test_TranslateToPlainText:
         finally:
             messagebox.showerror = original_showerror
 
-    def test_wrong_third_arg(self, tk_root) -> None:
+    def test_wrong_third_arg(self) -> None:
         """Test whether the function displays an error message with
         the expected title and content in the event the argument
         'audio_status' is not an instance of tkinter.Entry.
-
-        Args:
-            tk_root: A top-level tkinter widget.
 
         Returns:
               None
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_TO_PLAIN_THIRD_ARG_WRONG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_TO_PLAIN_THIRD_ARG_WRONG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -612,7 +609,7 @@ class Test_TranslateToPlainText:
             functions.translate_to_plain_text(user_morse_code_text="-",
                                               audio_request=True,
                                               audio_status=-3,  # noqa
-                                              output_entry=tk.Entry(tk_root))
+                                              output_entry=tk.Entry())
             assert self.messagebox_called, "The error message wasn't displayed."
 
         finally:
@@ -631,8 +628,8 @@ class Test_TranslateToPlainText:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_TO_PLAIN_FOURTH_ARG_WRONG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_TO_PLAIN_FOURTH_ARG_WRONG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -662,8 +659,8 @@ class Test_TranslateToPlainText:
         """
 
         def mock_showwarning(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_WARNING
-            assert message == globals.MESSAGEBOX_MSG_NOTHING_TO_TRANSLATE_WARNING
+            assert title == global_const.MESSAGEBOX_TITLE_WARNING
+            assert message == global_const.MESSAGEBOX_MSG_NOTHING_TO_TRANSLATE_WARNING
             self.messagebox_called = True
 
         original_showwarning = messagebox.showwarning
@@ -692,8 +689,8 @@ class Test_TranslateToPlainText:
         """
 
         def mock_showwarning(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_WARNING
-            assert message == globals.MESSAGEBOX_MSG_TRANSLATE_TO_PLAIN_WARNING
+            assert title == global_const.MESSAGEBOX_TITLE_WARNING
+            assert message == global_const.MESSAGEBOX_MSG_TRANSLATE_TO_PLAIN_WARNING
             self.messagebox_called = True
 
         original_showwarning = messagebox.showwarning
@@ -722,8 +719,8 @@ class Test_TranslateToPlainText:
               None
         """
         def mock_showwarning(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_WARNING
-            assert message == globals.MESSAGEBOX_MSG_MEANINGLESS_INPUT_WARNING
+            assert title == global_const.MESSAGEBOX_TITLE_WARNING
+            assert message == global_const.MESSAGEBOX_MSG_MEANINGLESS_INPUT_WARNING
             self.messagebox_called = True
 
         original_showwarning = messagebox.showwarning
@@ -763,7 +760,7 @@ class Test_TranslateToPlainText:
                None
          """
 
-        audio_filepath: str = f"{globals.DEFAULT_AUDIO_OUTPUT_DIR}/{globals.DEFAULT_AUDIO_OUTPUT_FILE}"
+        audio_filepath: str = f"{global_const.DEFAULT_AUDIO_OUTPUT_DIR}/{global_const.DEFAULT_AUDIO_OUTPUT_FILE}"
 
         expected_plain_text = "2 SEAS"  # "..--- / ... . .- ..."
         output_entry = tk.Entry(tk_root)
@@ -792,5 +789,5 @@ class Test_TranslateToPlainText:
         assert functions.most_recent_audio_filepath == audio_filepath, \
                "The variable most_recent_audio_filepath wasn't set to audio_filepath."
 
-        ready_message: str = f"{globals.AUDIO_READY_MESSAGE} {audio_filepath}"
+        ready_message: str = f"{global_const.AUDIO_READY_MESSAGE} {audio_filepath}"
         assert audio_status.get() == ready_message, "audio_status text wasn't set to ready_message."

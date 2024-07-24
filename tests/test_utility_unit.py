@@ -12,8 +12,8 @@ The tested functions are:
 import tkinter as tk
 from unittest.mock import patch, PropertyMock
 import pytest
-from morsecode import functions
-from morsecode import globals
+import morsecode.functions as functions
+import morsecode.globals as global_const
 
 # Globals
 TK_MESSAGE_ERROR: str = "tkinter.messagebox.showerror"
@@ -78,8 +78,8 @@ class Test_ChangeEntryText:
             assert mock_showerror.called, "The error message wasn't displayed."
 
             mock_showerror.assert_called_once_with(
-                title=globals.MESSAGEBOX_TITLE_ERROR,
-                message=globals.MESSAGEBOX_MSG_CHANGE_ENTRY_WRONG_FIRST_ARG_ERROR)
+                title=global_const.MESSAGEBOX_TITLE_ERROR,
+                message=global_const.MESSAGEBOX_MSG_CHANGE_ENTRY_WRONG_FIRST_ARG_ERROR)
 
     def test_wrong_second_arg(self, tk_root) -> None:
         """Test whether the function displays an error message with
@@ -98,8 +98,8 @@ class Test_ChangeEntryText:
             assert mock_showerror.called, "The error message wasn't displayed."
 
             mock_showerror.assert_called_once_with(
-                title=globals.MESSAGEBOX_TITLE_ERROR,
-                message=globals.MESSAGEBOX_MSG_CHANGE_ENTRY_WRONG_SECOND_ARG_ERROR)
+                title=global_const.MESSAGEBOX_TITLE_ERROR,
+                message=global_const.MESSAGEBOX_MSG_CHANGE_ENTRY_WRONG_SECOND_ARG_ERROR)
 
     def test_delete_entry_text_normal_state(self, tk_root) -> None:
         """Test whether the function correctly deletes all text from
@@ -221,8 +221,8 @@ class Test_ChangeMostRecentFilepath:
             assert mock_showerror.called, "The error message wasn't displayed."
 
             mock_showerror.assert_called_once_with(
-                title=globals.MESSAGEBOX_TITLE_ERROR,
-                message=globals.MESSAGEBOX_MSG_CHANGE_FILEPATH_WRONG_ARG_ERROR)
+                title=global_const.MESSAGEBOX_TITLE_ERROR,
+                message=global_const.MESSAGEBOX_MSG_CHANGE_FILEPATH_WRONG_ARG_ERROR)
 
     def test_change_and_erase_global_var(self) -> None:
         """Test whether the function correctly sets the variable
@@ -288,8 +288,8 @@ class Test_CopyToClipboard:
             assert mock_showerror.called, "The error message wasn't displayed."
 
             mock_showerror.assert_called_once_with(
-                title=globals.MESSAGEBOX_TITLE_ERROR,
-                message=globals.MESSAGEBOX_MSG_CLIPBOARD_WRONG_ARG_ERROR)
+                title=global_const.MESSAGEBOX_TITLE_ERROR,
+                message=global_const.MESSAGEBOX_MSG_CLIPBOARD_WRONG_ARG_ERROR)
 
     def test_empty_str(self) -> None:
         """Test whether the function displays a warning message with
@@ -305,8 +305,8 @@ class Test_CopyToClipboard:
             assert mock_showwarning.called, "The warning message wasn't displayed."
 
             mock_showwarning.assert_called_once_with(
-                title=globals.MESSAGEBOX_TITLE_WARNING,
-                message=globals.MESSAGEBOX_MSG_COPY_WARNING)
+                title=global_const.MESSAGEBOX_TITLE_WARNING,
+                message=global_const.MESSAGEBOX_MSG_COPY_WARNING)
 
     def test_copy_to_clipboard_with_valid_input(self) -> None:
         """Test whether the function correctly copies the given string
@@ -326,8 +326,8 @@ class Test_CopyToClipboard:
             assert mock_showinfo.called, "The info message wasn't displayed."
 
             mock_showinfo.assert_called_once_with(
-                title=globals.MESSAGEBOX_TITLE_SUCCESS,
-                message=globals.MESSAGEBOX_MSG_COPY_SUCCESS)
+                title=global_const.MESSAGEBOX_TITLE_SUCCESS,
+                message=global_const.MESSAGEBOX_MSG_COPY_SUCCESS)
 
 
 class Test_ClearAll:
@@ -351,8 +351,8 @@ class Test_ClearAll:
             assert mock_showerror.called, "The error message wasn't displayed."
 
             mock_showerror.assert_called_once_with(
-                title=globals.MESSAGEBOX_TITLE_ERROR,
-                message=globals.MESSAGEBOX_MSG_CLEAR_ALL_LACK_ARG_ERROR)
+                title=global_const.MESSAGEBOX_TITLE_ERROR,
+                message=global_const.MESSAGEBOX_MSG_CLEAR_ALL_LACK_ARG_ERROR)
 
     def test_wrong_arg(self, tk_root) -> None:
         """Test whether the function displays an error message with
@@ -371,8 +371,8 @@ class Test_ClearAll:
             assert mock_showerror.called, "The error message wasn't displayed."
 
             mock_showerror.assert_called_once_with(
-                title=globals.MESSAGEBOX_TITLE_ERROR,
-                message=globals.MESSAGEBOX_MSG_CLEAR_ALL_WRONG_ARG_ERROR)
+                title=global_const.MESSAGEBOX_TITLE_ERROR,
+                message=global_const.MESSAGEBOX_MSG_CLEAR_ALL_WRONG_ARG_ERROR)
 
     def test_clear_success(self, tk_root) -> None:
         """Test whether the function correctly clears all text from

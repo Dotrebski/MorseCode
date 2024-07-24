@@ -13,8 +13,9 @@ import tkinter as tk
 from tkinter import messagebox
 import pytest
 import pyperclip
-from morsecode import functions
-from morsecode import globals
+
+import morsecode.functions as functions
+import morsecode.globals as global_const
 
 # Globals
 TK_MESSAGE_ERROR: str = "tkinter.messagebox.showerror"
@@ -50,8 +51,8 @@ class Test_ChangeEntryText:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_CHANGE_ENTRY_WRONG_FIRST_ARG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_CHANGE_ENTRY_WRONG_FIRST_ARG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -77,8 +78,8 @@ class Test_ChangeEntryText:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_CHANGE_ENTRY_WRONG_SECOND_ARG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_CHANGE_ENTRY_WRONG_SECOND_ARG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -110,8 +111,8 @@ class Test_ChangeMostRecentFilepath:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_CHANGE_FILEPATH_WRONG_ARG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_CHANGE_FILEPATH_WRONG_ARG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -159,8 +160,8 @@ class Test_CopyToClipboard:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_CLIPBOARD_WRONG_ARG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_CLIPBOARD_WRONG_ARG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -183,8 +184,8 @@ class Test_CopyToClipboard:
         """
 
         def mock_showwarning(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_WARNING
-            assert message == globals.MESSAGEBOX_MSG_COPY_WARNING
+            assert title == global_const.MESSAGEBOX_TITLE_WARNING
+            assert message == global_const.MESSAGEBOX_MSG_COPY_WARNING
             self.messagebox_called = True
 
         original_showwarning = messagebox.showwarning
@@ -207,8 +208,8 @@ class Test_CopyToClipboard:
         """
 
         def mock_showinfo(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_SUCCESS
-            assert message == globals.MESSAGEBOX_MSG_COPY_SUCCESS
+            assert title == global_const.MESSAGEBOX_TITLE_SUCCESS
+            assert message == global_const.MESSAGEBOX_MSG_COPY_SUCCESS
             self.messagebox_called = True
 
         original_showinfo = messagebox.showinfo
@@ -241,8 +242,8 @@ class Test_ClearAll:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_CLEAR_ALL_LACK_ARG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_CLEAR_ALL_LACK_ARG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror
@@ -265,8 +266,8 @@ class Test_ClearAll:
         """
 
         def mock_showerror(title, message):
-            assert title == globals.MESSAGEBOX_TITLE_ERROR
-            assert message == globals.MESSAGEBOX_MSG_CLEAR_ALL_WRONG_ARG_ERROR
+            assert title == global_const.MESSAGEBOX_TITLE_ERROR
+            assert message == global_const.MESSAGEBOX_MSG_CLEAR_ALL_WRONG_ARG_ERROR
             self.messagebox_called = True
 
         original_showerror = messagebox.showerror

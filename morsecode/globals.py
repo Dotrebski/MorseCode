@@ -7,7 +7,7 @@ output audio settings, tkinter.messagebox messages and regex patterns.
 
 import re
 
-APP_TITLE: str = "Morse Code Translator & Audio Generator v1.0.0"
+APP_TITLE: str = "Morse Code Translator & Audio Generator v1.0.1"
 MORSE_CODE_DICT: dict = {"A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.",
                          "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.",
                          "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-",

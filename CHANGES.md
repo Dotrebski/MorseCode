@@ -1,3 +1,7 @@
+## [v1.0.1] -- 2024-07-24
+### Fixed
+- Fixed imports by using absolute paths.
+
 ## [v1.0.0] -- 2024-07-22
 ### Added
 - The directory `tests`.
