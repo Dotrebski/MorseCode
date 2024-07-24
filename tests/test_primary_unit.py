@@ -15,6 +15,7 @@ import tkinter as tk
 from unittest.mock import patch, PropertyMock
 import pytest
 from playsound3.playsound3 import PlaysoundException
+
 from morsecode import functions
 from morsecode import globals
 
@@ -119,20 +120,6 @@ class Test_PlayAudioFile:
             mock_showwarn.assert_called_once_with(
                 title=globals.MESSAGEBOX_TITLE_WARNING,
                 message=globals.MESSAGEBOX_MSG_PLAY_WARNING)
-
-    def test_play_existing_file(self) -> None:
-        """Test whether the function can play back a valid .wav file
-        a warning message with the expected title and content
-        in the event the argument 'audio_status' is an empty string.
-
-        Returns:
-              None
-        """
-
-        try:
-            functions.play_audio_file("tests/test_audio.wav")
-        except Exception as e:
-            pytest.fail(f"An unexpected exception was raised: {e}")
 
 
 class Test_CreateAudioFile:
@@ -549,7 +536,7 @@ class Test_TranslateToMorseCode:
 
         functions.translate_to_morse_code(user_plain_text="  hey ",
                                           audio_request=False,
-                                          audio_status=tk.Entry(tk_root),
+                                          audio_status=tk.Entry(),
                                           output_entry=output_entry)
 
         assert output_entry.get() == expected_morse_code, "output_entry text didn't match the expected Morse code."

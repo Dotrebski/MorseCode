@@ -255,13 +255,10 @@ class Test_ClearAll:
         finally:
             messagebox.showerror = original_showerror
 
-    def test_wrong_arg(self, tk_root) -> None:
+    def test_wrong_arg(self) -> None:
         """Test whether the function displays an error message with
         the expected title and content in the event at least
         one of the arguments is not an instance of tkinter.Entry.
-
-        Args:
-            tk_root: A top-level tkinter widget.
 
         Returns:
               None
@@ -277,7 +274,7 @@ class Test_ClearAll:
 
         try:
             self.messagebox_called = False
-            functions.clear_all(tk.Entry(tk_root), 0)  # noqa
+            functions.clear_all(tk.Entry(), 0)  # noqa
             assert self.messagebox_called, "The error message wasn't displayed."
         finally:
             messagebox.showerror = original_showerror
