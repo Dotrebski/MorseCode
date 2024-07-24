@@ -1,4 +1,4 @@
-"""These tests evaluate whether the utility functions used
+"""These unit tests evaluate whether the utility functions used
 by the app work as expected, and whether they can handle
 some edge cases.
 
@@ -10,9 +10,8 @@ The tested functions are:
 """
 
 import tkinter as tk
-from unittest.mock import patch
+from unittest.mock import patch, PropertyMock
 import pytest
-import pyperclip
 from morsecode import functions
 from morsecode import globals
 
@@ -27,6 +26,7 @@ def tk_root():
     """A fixture returning a top-level tkinter widget."""
 
     root = tk.Tk()
+    root.withdraw()
     yield root
     root.destroy()
 
@@ -47,7 +47,7 @@ class Test_ChangeEntryText:
               None
         """
 
-        with pytest.raises(TypeError):
+        with pytest.raises(expected_exception=TypeError):
             functions.change_entry_text()  # noqa
 
     def test_more_than_two_args(self, tk_root) -> None:
@@ -61,7 +61,7 @@ class Test_ChangeEntryText:
               None
         """
 
-        with pytest.raises(TypeError):
+        with pytest.raises(expected_exception=TypeError):
             functions.change_entry_text(tk.Entry(tk_root), "arg2", True)  # noqa
 
     def test_wrong_first_arg(self) -> None:
@@ -73,7 +73,7 @@ class Test_ChangeEntryText:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.change_entry_text(entry_to_change=1.2)  # noqa
             assert mock_showerror.called, "The error message wasn't displayed."
 
@@ -93,7 +93,7 @@ class Test_ChangeEntryText:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.change_entry_text(entry_to_change=tk.Entry(tk_root), change_to=3)  # noqa
             assert mock_showerror.called, "The error message wasn't displayed."
 
@@ -157,8 +157,8 @@ class Test_ChangeEntryText:
         """
 
         entry_normal = tk.Entry(tk_root)
-        entry_normal.pack()
         entry_normal.insert(index=0, string=TEST_TEXT)
+        entry_normal.pack()
 
         functions.change_entry_text(entry_to_change=entry_normal, change_to="New Text")
 
@@ -178,9 +178,9 @@ class Test_ChangeEntryText:
         """
 
         entry_readonly = tk.Entry(tk_root)
-        entry_readonly.pack()
         entry_readonly.insert(index=0, string=TEST_TEXT)
         entry_readonly.config(state="readonly")
+        entry_readonly.pack()
 
         functions.change_entry_text(entry_to_change=entry_readonly, change_to="New Text")
 
@@ -204,7 +204,7 @@ class Test_ChangeMostRecentFilepath:
               None
         """
 
-        with pytest.raises(TypeError):
+        with pytest.raises(expected_exception=TypeError):
             functions.change_most_recent_filepath("", "arg2")  # noqa
 
     def test_wrong_arg(self) -> None:
@@ -216,7 +216,7 @@ class Test_ChangeMostRecentFilepath:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.change_most_recent_filepath(change_to=1.2)  # noqa
             assert mock_showerror.called, "The error message wasn't displayed."
 
@@ -233,13 +233,16 @@ class Test_ChangeMostRecentFilepath:
               None
         """
 
-        functions.change_most_recent_filepath(change_to=TEST_PATH)
-        assert functions.most_recent_audio_filepath == TEST_PATH, ("The variable 'most_recent_audio_filepath' wasn't"
-                                                                   " set to the expected string.")
+        with patch(target="functions.most_recent_audio_filepath", new_callable=PropertyMock) as mock_var:
+            mock_var.return_value = TEST_PATH
+            functions.change_most_recent_filepath(change_to=TEST_PATH)
+            assert mock_var.return_value == TEST_PATH, ("The variable 'most_recent_audio_filepath'"
+                                                        " wasn't set to the expected string.")
 
-        functions.change_most_recent_filepath()
-        assert functions.most_recent_audio_filepath == "", ("The variable 'most_recent_audio_filepath' wasn't"
-                                                            " set to an empty string.")
+            mock_var.return_value = ""
+            functions.change_most_recent_filepath()
+            assert mock_var.return_value == "", ("The variable 'most_recent_audio_filepath' wasn't set to an empty"
+                                                 " string.")
 
 
 class Test_CopyToClipboard:
@@ -257,7 +260,7 @@ class Test_CopyToClipboard:
               None
         """
 
-        with pytest.raises(TypeError):
+        with pytest.raises(expected_exception=TypeError):
             functions.copy_to_clipboard()  # noqa
 
     def test_more_than_one_arg(self) -> None:
@@ -268,7 +271,7 @@ class Test_CopyToClipboard:
               None
         """
 
-        with pytest.raises(TypeError):
+        with pytest.raises(expected_exception=TypeError):
             functions.copy_to_clipboard("arg1", "arg2")  # noqa
 
     def test_wrong_arg(self) -> None:
@@ -280,7 +283,7 @@ class Test_CopyToClipboard:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.copy_to_clipboard(text_to_copy=2.5)  # noqa
             assert mock_showerror.called, "The error message wasn't displayed."
 
@@ -297,7 +300,7 @@ class Test_CopyToClipboard:
               None
         """
 
-        with patch("tkinter.messagebox.showwarning") as mock_showwarning:
+        with patch(target="tkinter.messagebox.showwarning") as mock_showwarning:
             functions.copy_to_clipboard(text_to_copy="")
             assert mock_showwarning.called, "The warning message wasn't displayed."
 
@@ -314,9 +317,10 @@ class Test_CopyToClipboard:
               None
         """
 
-        with patch('functions.messagebox.showinfo') as mock_showinfo:
+        with patch(target="functions.messagebox.showinfo") as mock_showinfo, \
+                patch(target="pyperclip.paste", return_value=TEST_TEXT) as mock_paste:
             functions.copy_to_clipboard(text_to_copy=TEST_TEXT)
-            clipboard_content = pyperclip.paste()
+            clipboard_content: str = mock_paste()
 
             assert clipboard_content == TEST_TEXT, "TEST_TEXT wasn't copied to the system clipboard."
             assert mock_showinfo.called, "The info message wasn't displayed."
@@ -342,7 +346,7 @@ class Test_ClearAll:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.clear_all()
             assert mock_showerror.called, "The error message wasn't displayed."
 
@@ -362,7 +366,7 @@ class Test_ClearAll:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.clear_all(tk.Entry(tk_root), 0)  # noqa
             assert mock_showerror.called, "The error message wasn't displayed."
 
@@ -381,20 +385,21 @@ class Test_ClearAll:
               None
         """
 
-        functions.change_most_recent_filepath(change_to=TEST_PATH)
-        assert functions.most_recent_audio_filepath == TEST_PATH, ("The variable 'most_recent_audio_filepath' wasn't"
-                                                                   " set to the expected string.")
+        with patch(target="functions.most_recent_audio_filepath", new_callable=PropertyMock) as mock_var:
+            mock_var.return_value = TEST_PATH
 
-        arg1_clear_all = tk.Entry(tk_root)
-        arg1_clear_all.insert(index=0, string=TEST_TEXT)
-        arg1_clear_all.pack()
+            arg1_clear_all = tk.Entry(tk_root)
+            arg1_clear_all.insert(index=0, string=TEST_TEXT)
+            arg1_clear_all.pack()
 
-        arg2_clear_all = tk.Entry(tk_root)
-        arg2_clear_all.insert(index=0, string=TEST_TEXT)
-        arg2_clear_all.pack()
+            arg2_clear_all = tk.Entry(tk_root)
+            arg2_clear_all.insert(index=0, string=TEST_TEXT)
+            arg2_clear_all.pack()
 
-        functions.clear_all(arg1_clear_all, arg2_clear_all)
-        assert arg1_clear_all.get() == "", "The first argument wasn't set to an empty string."
-        assert arg2_clear_all.get() == "", "The second argument wasn't set to an empty string."
-        assert functions.most_recent_audio_filepath == "", ("The variable 'most_recent_audio_filepath' wasn't"
-                                                            " set to the expected string.")
+            functions.clear_all(arg1_clear_all, arg2_clear_all)
+            mock_var.return_value = ""
+
+            assert arg1_clear_all.get() == "", "The first argument wasn't set to an empty string."
+            assert arg2_clear_all.get() == "", "The second argument wasn't set to an empty string."
+            assert mock_var.return_value == "", ("The variable 'most_recent_audio_filepath' wasn't"
+                                                 " set to the expected string.")

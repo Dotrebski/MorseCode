@@ -1,5 +1,6 @@
-"""These tests evaluate whether the primary functions used by the app
-work as expected, and whether they can handle some edge cases.
+"""These unit tests evaluate whether the primary functions used
+by the app work as expected, and whether they can handle some
+edge cases.
 
 The tested functions are:
 1. play_audio_file,
@@ -11,7 +12,7 @@ The tested functions are:
 import os
 import tempfile
 import tkinter as tk
-from unittest.mock import patch
+from unittest.mock import patch, PropertyMock
 import pytest
 from playsound3.playsound3 import PlaysoundException
 from morsecode import functions
@@ -29,6 +30,7 @@ def tk_root():
     """A fixture returning a top-level tkinter widget."""
 
     root = tk.Tk()
+    root.withdraw()
     yield root
     root.destroy()
 
@@ -48,7 +50,7 @@ class Test_PlayAudioFile:
               None
         """
 
-        with pytest.raises(TypeError):
+        with pytest.raises(expected_exception=TypeError):
             functions.play_audio_file()  # noqa
 
     def test_more_than_one_arg(self) -> None:
@@ -59,7 +61,7 @@ class Test_PlayAudioFile:
               None
         """
 
-        with pytest.raises(TypeError):
+        with pytest.raises(expected_exception=TypeError):
             functions.play_audio_file("arg1", "arg2")  # noqa
 
     def test_wrong_arg(self) -> None:
@@ -71,7 +73,7 @@ class Test_PlayAudioFile:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.play_audio_file(audio_status=2)  # noqa
             assert mock_showerror.called, "The error message wasn't displayed."
 
@@ -92,14 +94,14 @@ class Test_PlayAudioFile:
 
         error_message: str = "Error message"
 
-        with patch('playsound3.playsound', side_effect=PlaysoundException(error_message)):
-            with patch(TK_MESSAGE_ERROR) as mock_showerror:
-                functions.play_audio_file(audio_status="test")  # The value doesn't matter as long as it's not empty.
-                assert mock_showerror.called, "The error message wasn't displayed."
+        with patch(target='playsound3.playsound', side_effect=PlaysoundException(error_message)), \
+                patch(target=TK_MESSAGE_ERROR) as mock_showerror:
+            functions.play_audio_file(audio_status=TEST_TEXT)  # The value doesn't matter as long as it's not empty.
+            assert mock_showerror.called, "The error message wasn't displayed."
 
-                mock_showerror.assert_called_once_with(
-                    title=functions.globals.MESSAGEBOX_TITLE_ERROR,
-                    message=error_message)
+            mock_showerror.assert_called_once_with(
+                title=functions.globals.MESSAGEBOX_TITLE_ERROR,
+                message=error_message)
 
     def test_no_file_yet(self) -> None:
         """Test whether the function displays a warning message with
@@ -110,7 +112,7 @@ class Test_PlayAudioFile:
               None
         """
 
-        with patch(TK_MESSAGE_WARN) as mock_showwarn:
+        with patch(target=TK_MESSAGE_WARN) as mock_showwarn:
             functions.play_audio_file("")
             assert mock_showwarn.called, "The warning message wasn't displayed."
 
@@ -150,7 +152,7 @@ class Test_CreateAudioFile:
               None
         """
 
-        with pytest.raises(TypeError):
+        with pytest.raises(expected_exception=TypeError):
             functions.create_audio_file()  # noqa
 
     def test_more_than_two_args(self) -> None:
@@ -161,10 +163,10 @@ class Test_CreateAudioFile:
               None
         """
 
-        with pytest.raises(TypeError):
+        with pytest.raises(expected_exception=TypeError):
             functions.create_audio_file("arg1", "arg2", "arg3")  # noqa
 
-    def test_wrong_first_arg(self) -> None:
+    def test_wrong_first_arg(self, tk_root) -> None:
         """Test whether the function displays an error message with
         the expected title and content in the event the argument
         'normalized_text' is not of type str.
@@ -173,27 +175,24 @@ class Test_CreateAudioFile:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
-            functions.create_audio_file(normalized_text=3, audio_status=tk.Entry())  # noqa
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
+            functions.create_audio_file(normalized_text=3, audio_status=tk.Entry(tk_root))  # noqa
             assert mock_showerror.called, "The error message wasn't displayed."
 
             mock_showerror.assert_called_once_with(
                 title=globals.MESSAGEBOX_TITLE_ERROR,
                 message=globals.MESSAGEBOX_MSG_CREATE_AUDIO_FIRST_ARG_WRONG_ERROR)
 
-    def test_wrong_second_arg(self, tk_root) -> None:
+    def test_wrong_second_arg(self) -> None:
         """Test whether the function displays an error message with
         the expected title and content in the event the argument
         'audio_status' is not an instance of tkinter.Entry.
-
-        Args:
-            tk_root: A top-level tkinter widget.
 
         Returns:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.create_audio_file(normalized_text=TEST_TEXT, audio_status=3.9)  # noqa
             assert mock_showerror.called, "The error message wasn't displayed."
 
@@ -221,20 +220,19 @@ class Test_CreateAudioFile:
         audio_status.config(state="readonly")
         audio_status.pack()
 
-        with patch('functions.messagebox.askyesno', return_value=False) as mock_askyesno:
-            functions.change_most_recent_filepath(change_to=TEST_TEXT)
-            assert functions.most_recent_audio_filepath == TEST_TEXT, ("The variable 'most_recent_audio_filepath'"
-                                                                       " wasn't set to TEST_TEXT.")
-
+        with patch(target='functions.messagebox.askyesno', return_value=False) as mock_askyesno, \
+                patch(target="functions.most_recent_audio_filepath", new_callable=PropertyMock) as mock_var:
+            mock_var.return_value = TEST_PATH
             functions.create_audio_file(normalized_text=invalid_text, audio_status=audio_status)
-            assert mock_askyesno.called, "The confirmation prompt wasn't displayed."
+            mock_var.return_value = ""
 
+            assert mock_askyesno.called, "The confirmation prompt wasn't displayed."
             assert invalid_text == "#test@", "The invalid input was sanitized."
             assert audio_status.get() == "", "The variable 'audio_status' wasn't set to an empty string."
             assert audio_status.cget("state") == "readonly", ("The variable 'audio_status' wasn't restored"
                                                               "to its original state ('readonly').")
-            assert functions.most_recent_audio_filepath == "", ("The variable 'most_recent_audio_filepath'"
-                                                                " wasn't set to an empty string.")
+            assert mock_var.return_value == "", ("The variable 'most_recent_audio_filepath' wasn't"
+                                                 " set to an empty string.")
 
             mock_askyesno.assert_called_once_with(
                 title=globals.MESSAGEBOX_TITLE_CONFIRM,
@@ -261,19 +259,27 @@ class Test_CreateAudioFile:
         audio_status.config(state="readonly")
         audio_status.pack()
 
-        with patch('functions.messagebox.askyesno', return_value=True):
-            with tempfile.TemporaryDirectory() as tmp_dir:
-                with patch('globals.DEFAULT_AUDIO_OUTPUT_DIR', new=tmp_dir):
-                    functions.create_audio_file(normalized_text=invalid_test, audio_status=audio_status)
-                    audio_filepath = f"{tmp_dir}/{globals.DEFAULT_AUDIO_OUTPUT_FILE}"
+        with patch(target="functions.messagebox.askyesno", return_value=True) as mock_askyesno, \
+                patch(target="functions.most_recent_audio_filepath", new_callable=PropertyMock) as mock_var, \
+                tempfile.TemporaryDirectory() as tmp_dir, \
+                patch(target="globals.DEFAULT_AUDIO_OUTPUT_DIR", new=tmp_dir):
+            mock_var.return_value = ""
+            functions.create_audio_file(normalized_text=invalid_test, audio_status=audio_status)
+            audio_filepath: str = f"{tmp_dir}/{globals.DEFAULT_AUDIO_OUTPUT_FILE}"
+            mock_var.return_value = audio_filepath
 
-                    assert os.path.isdir(tmp_dir), "The directory wasn't created in the test directory."
-                    assert os.path.exists(audio_filepath), f"The file {audio_filepath} wasn't created."
-                    assert functions.most_recent_audio_filepath == audio_filepath, \
-                           "The variable 'most_recent_audio_filepath' wasn't set to audio_filepath'."
+            assert os.path.isdir(tmp_dir), "The directory wasn't created in the test directory."
+            assert os.path.exists(audio_filepath), f"The file {audio_filepath} wasn't created."
+            assert mock_var.return_value == audio_filepath, \
+                "The variable most_recent_audio_filepath wasn't set to audio_filepath."
 
-                    ready_message: str = f"{globals.AUDIO_READY_MESSAGE} {audio_filepath}"
-                    assert audio_status.get() == ready_message, "The entry audio_status wasn't set to ready_message."
+            ready_message: str = f"{globals.AUDIO_READY_MESSAGE} {audio_filepath}"
+            assert audio_status.get() == ready_message, "The entry audio_status wasn't set to ready_message."
+
+            mock_askyesno.assert_called_once_with(
+                title=globals.MESSAGEBOX_TITLE_CONFIRM,
+                message=globals.MESSAGEBOX_MSG_AUTO_CLEANUP_CONFIRM
+            )
 
     def test_happy_path(self, tk_root) -> None:
         """Test whether the function can create an audio file given
@@ -292,20 +298,23 @@ class Test_CreateAudioFile:
         audio_status.config(state="readonly")
         audio_status.pack()
 
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            with patch('globals.DEFAULT_AUDIO_OUTPUT_DIR', new=tmp_dir):
-                functions.create_audio_file(normalized_text=normalized_text, audio_status=audio_status)
-                audio_filepath = f"{tmp_dir}/{globals.DEFAULT_AUDIO_OUTPUT_FILE}"
+        with patch(target="functions.most_recent_audio_filepath", new_callable=PropertyMock) as mock_var, \
+                tempfile.TemporaryDirectory() as tmp_dir, \
+                patch(target="globals.DEFAULT_AUDIO_OUTPUT_DIR", new=tmp_dir):
+            mock_var.return_value = ""
+            functions.create_audio_file(normalized_text=normalized_text, audio_status=audio_status)
+            audio_filepath = f"{tmp_dir}/{globals.DEFAULT_AUDIO_OUTPUT_FILE}"
+            mock_var.return_value = audio_filepath
 
-                assert os.path.isdir(tmp_dir), "The directory wasn't created in the test directory."
-                assert os.path.exists(audio_filepath), f"The file {audio_filepath} wasn't created."
-                assert functions.most_recent_audio_filepath == audio_filepath, \
-                    "The variable 'most_recent_audio_filepath' wasn't set to audio_filepath'."
+            assert os.path.isdir(tmp_dir), "The directory wasn't created in the test directory."
+            assert os.path.exists(audio_filepath), f"The file {audio_filepath} wasn't created."
+            assert mock_var.return_value == audio_filepath, \
+                "The variable 'most_recent_audio_filepath' wasn't set to audio_filepath'."
 
-                ready_message: str = f"{globals.AUDIO_READY_MESSAGE} {audio_filepath}"
-                assert audio_status.get() == ready_message, "The entry audio_status wasn't set to ready_message."
+            ready_message: str = f"{globals.AUDIO_READY_MESSAGE} {audio_filepath}"
+            assert audio_status.get() == ready_message, "The entry audio_status wasn't set to ready_message."
 
-    def test_no_perm(self, tk_root) -> None:
+    def test_perm_err(self, tk_root) -> None:
         """Test whether the function displays an error message with
         the correct title and content in the event PermissionError
         is raised.
@@ -317,15 +326,15 @@ class Test_CreateAudioFile:
               None
         """
 
-        with patch('functions.os.makedirs', side_effect=PermissionError):
-            with patch('builtins.open', side_effect=PermissionError):
-                with patch(TK_MESSAGE_ERROR) as mock_showerror:
-                    functions.create_audio_file(normalized_text=TEST_TEXT, audio_status=tk.Entry(tk_root))
-                    assert mock_showerror.called, "The error message wasn't displayed."
+        with patch(target='functions.os.makedirs', side_effect=PermissionError), \
+                patch(target='builtins.open', side_effect=PermissionError), \
+                patch(target=TK_MESSAGE_ERROR) as mock_showerror:
+            functions.create_audio_file(normalized_text=TEST_TEXT, audio_status=tk.Entry(tk_root))
+            assert mock_showerror.called, "The error message wasn't displayed."
 
-                    mock_showerror.assert_called_once_with(
-                        title=globals.MESSAGEBOX_TITLE_ERROR,
-                        message=globals.MESSAGEBOX_MSG_TO_MORSE_PERM_ERROR)
+            mock_showerror.assert_called_once_with(
+                title=globals.MESSAGEBOX_TITLE_ERROR,
+                message=globals.MESSAGEBOX_MSG_TO_MORSE_PERM_ERROR)
 
 
 class Test_TranslateToMorseCode:
@@ -344,7 +353,7 @@ class Test_TranslateToMorseCode:
                None
          """
 
-        with pytest.raises(TypeError):
+        with pytest.raises(expected_exception=TypeError):
             functions.translate_to_morse_code()  # noqa
 
     def test_more_than_four_args(self, tk_root) -> None:
@@ -358,7 +367,7 @@ class Test_TranslateToMorseCode:
               None
         """
 
-        with pytest.raises(TypeError):
+        with pytest.raises(expected_exception=TypeError):
             functions.translate_to_morse_code("test text",
                                               False,
                                               tk.Entry(tk_root),
@@ -377,7 +386,7 @@ class Test_TranslateToMorseCode:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.translate_to_morse_code(user_plain_text=1,  # noqa
                                               audio_request=True,
                                               audio_status=tk.Entry(tk_root),
@@ -400,7 +409,7 @@ class Test_TranslateToMorseCode:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.translate_to_morse_code(user_plain_text=TEST_TEXT,
                                               audio_request=2,  # noqa
                                               audio_status=tk.Entry(tk_root),
@@ -423,7 +432,7 @@ class Test_TranslateToMorseCode:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.translate_to_morse_code(user_plain_text=TEST_TEXT,
                                               audio_request=True,
                                               audio_status=1,  # noqa
@@ -446,7 +455,7 @@ class Test_TranslateToMorseCode:
                None
          """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.translate_to_morse_code(user_plain_text=TEST_TEXT,
                                               audio_request=True,
                                               audio_status=tk.Entry(tk_root),
@@ -469,7 +478,7 @@ class Test_TranslateToMorseCode:
                None
          """
 
-        with patch(TK_MESSAGE_WARN) as mock_showwarning:
+        with patch(target=TK_MESSAGE_WARN) as mock_showwarning:
             functions.translate_to_morse_code(user_plain_text="",
                                               audio_request=True,
                                               audio_status=tk.Entry(tk_root),
@@ -501,17 +510,20 @@ class Test_TranslateToMorseCode:
         audio_status.config(state="readonly")
         audio_status.pack()
 
-        with patch(TK_MESSAGE_WARN) as mock_showwarning:
-            functions.change_most_recent_filepath(change_to=TEST_TEXT)
+        with patch(target=TK_MESSAGE_WARN) as mock_showwarning, \
+                patch(target="functions.most_recent_audio_filepath", new_callable=PropertyMock) as mock_var:
+            mock_var.return_value = TEST_TEXT
+
             functions.translate_to_morse_code(user_plain_text="##",
                                               audio_request=True,
                                               audio_status=audio_status,
                                               output_entry=tk.Entry(tk_root))
+            mock_var.return_value = ""
 
-            assert functions.most_recent_audio_filepath == "", ("The variable 'most_recent_audio_filepath'"
-                                                                " wasn't set to an empty string.")
+            assert mock_var.return_value == "", ("The variable most_recent_audio_filepath"
+                                                 " wasn't set to an empty string.")
             assert audio_status.get() == "", "The audio_status text wasn't set to an empty string."
-            assert audio_status.cget("state") == "readonly", "The audio_status state wasn't set to 'readonly'."
+            assert audio_status.cget("state") == "readonly", "The audio_status state wasn't set back to 'readonly'."
             assert mock_showwarning.called, "The warning message wasn't displayed."
 
             mock_showwarning.assert_called_once_with(
@@ -555,7 +567,7 @@ class Test_TranslateToMorseCode:
                None
          """
 
-        expected_morse_code: str = "--.. --- .-.. -.-."  # "ŻÓŁĆ"
+        expected_morse_code: str = "--.. --- .-.. -.-."  # "ZOLC"
         output_entry = tk.Entry(tk_root)
         output_entry.insert(index=0, string=TEST_TEXT)
         output_entry.pack()
@@ -590,25 +602,27 @@ class Test_TranslateToMorseCode:
         audio_status.config(state="readonly")
         audio_status.pack()
 
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            with patch('globals.DEFAULT_AUDIO_OUTPUT_DIR', new=tmp_dir):
-                audio_filepath: str = f"{tmp_dir}/{globals.DEFAULT_AUDIO_OUTPUT_FILE}"
+        with patch(target="functions.most_recent_audio_filepath", new_callable=PropertyMock) as mock_var, \
+                tempfile.TemporaryDirectory() as tmp_dir, \
+                patch('globals.DEFAULT_AUDIO_OUTPUT_DIR', new=tmp_dir):
+            audio_filepath: str = f"{tmp_dir}/{globals.DEFAULT_AUDIO_OUTPUT_FILE}"
+            mock_var.return_value = ""
+            functions.translate_to_morse_code(user_plain_text=" 2 SeAs",
+                                              audio_request=True,
+                                              audio_status=audio_status,
+                                              output_entry=output_entry)
+            mock_var.return_value = audio_filepath
 
-                functions.translate_to_morse_code(user_plain_text=" 2 SeAs",
-                                                  audio_request=True,
-                                                  audio_status=audio_status,
-                                                  output_entry=output_entry)
+            assert output_entry.get() == expected_morse_code, ("output_entry text didn't match the expected"
+                                                               " Morse code.")
+            assert output_entry.cget("state") == "normal", "output_entry state didn't match the original."
 
-                assert output_entry.get() == expected_morse_code, ("output_entry text didn't match the expected"
-                                                                   " Morse code.")
-                assert output_entry.cget("state") == "normal", "output_entry state didn't match the original."
-
-                assert os.path.isdir(tmp_dir), "The directory wasn't created in the test directory."
-                assert os.path.exists(audio_filepath), "The audio file wasn't created."
-                assert functions.most_recent_audio_filepath == audio_filepath, \
-                    "The variable 'most_recent_audio_filepath' wasn't set to the generated audio file filepath."
-                ready_message: str = f"{globals.AUDIO_READY_MESSAGE} {audio_filepath}"
-                assert audio_status.get() == ready_message, "audio_status text didn't match ready_message."
+            assert os.path.isdir(tmp_dir), "The directory wasn't created in the test directory."
+            assert os.path.exists(audio_filepath), "The audio file wasn't created."
+            assert mock_var.return_value == audio_filepath, \
+                "The variable most_recent_audio_filepath wasn't set to the generated audio file filepath."
+            ready_message: str = f"{globals.AUDIO_READY_MESSAGE} {audio_filepath}"
+            assert audio_status.get() == ready_message, "audio_status text didn't match ready_message."
 
 
 class Test_TranslateToPlainText:
@@ -627,7 +641,7 @@ class Test_TranslateToPlainText:
                None
          """
 
-        with pytest.raises(TypeError):
+        with pytest.raises(expected_exception=TypeError):
             functions.translate_to_plain_text()  # noqa
 
     def test_more_than_four_args(self, tk_root) -> None:
@@ -641,7 +655,7 @@ class Test_TranslateToPlainText:
               None
         """
 
-        with pytest.raises(TypeError):
+        with pytest.raises(expected_exception=TypeError):
             functions.translate_to_plain_text(".",
                                               False,
                                               tk.Entry(tk_root),
@@ -660,7 +674,7 @@ class Test_TranslateToPlainText:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.translate_to_plain_text(user_morse_code_text=2,  # noqa
                                               audio_request=True,
                                               audio_status=tk.Entry(tk_root),
@@ -683,7 +697,7 @@ class Test_TranslateToPlainText:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.translate_to_plain_text(user_morse_code_text=".",
                                               audio_request=2,  # noqa
                                               audio_status=tk.Entry(tk_root),
@@ -706,7 +720,7 @@ class Test_TranslateToPlainText:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.translate_to_plain_text(user_morse_code_text="-",
                                               audio_request=True,
                                               audio_status=-3,  # noqa
@@ -729,7 +743,7 @@ class Test_TranslateToPlainText:
               None
         """
 
-        with patch(TK_MESSAGE_ERROR) as mock_showerror:
+        with patch(target=TK_MESSAGE_ERROR) as mock_showerror:
             functions.translate_to_plain_text(user_morse_code_text="-",
                                               audio_request=True,
                                               audio_status=tk.Entry(tk_root),
@@ -752,7 +766,7 @@ class Test_TranslateToPlainText:
               None
         """
 
-        with patch(TK_MESSAGE_WARN) as mock_showwarning:
+        with patch(target=TK_MESSAGE_WARN) as mock_showwarning:
             functions.translate_to_plain_text(user_morse_code_text="",
                                               audio_request=True,
                                               audio_status=tk.Entry(tk_root),
@@ -775,7 +789,7 @@ class Test_TranslateToPlainText:
               None
         """
 
-        with patch(TK_MESSAGE_WARN) as mock_showwarning:
+        with patch(target=TK_MESSAGE_WARN) as mock_showwarning:
             functions.translate_to_plain_text(user_morse_code_text="#$gaw",
                                               audio_request=True,
                                               audio_status=tk.Entry(tk_root),
@@ -804,15 +818,17 @@ class Test_TranslateToPlainText:
         audio_status.config(state="readonly")
         audio_status.pack()
 
-        with patch(TK_MESSAGE_WARN) as mock_showwarning:
-            functions.change_most_recent_filepath(change_to=TEST_TEXT)
+        with patch(target=TK_MESSAGE_WARN) as mock_showwarning, \
+                patch(target="functions.most_recent_audio_filepath", new_callable=PropertyMock) as mock_var:
+            mock_var.return_value = TEST_TEXT
             functions.translate_to_plain_text(user_morse_code_text="-----------",
                                               audio_request=True,
                                               audio_status=audio_status,
                                               output_entry=tk.Entry(tk_root))
+            mock_var.return_value = ""
 
-            assert functions.most_recent_audio_filepath == "", ("The variable 'most_recent_audio_filepath'"
-                                                                " wasn't set to an empty string.")
+            assert mock_var.return_value == "", ("The variable 'most_recent_audio_filepath'"
+                                                 " wasn't set to an empty string.")
             assert audio_status.get() == "", "audio_status text wasn't set to an empty string."
             assert audio_status.cget("state") == "readonly", "audio_status state wasn't reverted to its original state."
             assert mock_showwarning.called, "The warning message wasn't displayed."
@@ -868,22 +884,25 @@ class Test_TranslateToPlainText:
         audio_status.config(state="readonly")
         audio_status.pack()
 
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            with patch('globals.DEFAULT_AUDIO_OUTPUT_DIR', new=tmp_dir):
-                audio_filepath = f"{tmp_dir}/{globals.DEFAULT_AUDIO_OUTPUT_FILE}"
+        with tempfile.TemporaryDirectory() as tmp_dir, \
+                patch(target="globals.DEFAULT_AUDIO_OUTPUT_DIR", new=tmp_dir), \
+                patch(target="functions.most_recent_audio_filepath", new_callable=PropertyMock) as mock_var:
 
-                functions.translate_to_plain_text(user_morse_code_text="..--- / ... . .- ...",
-                                                  audio_request=True,
-                                                  audio_status=audio_status,
-                                                  output_entry=output_entry)
+            audio_filepath = f"{tmp_dir}/{globals.DEFAULT_AUDIO_OUTPUT_FILE}"
+            mock_var.return_value = ""
+            functions.translate_to_plain_text(user_morse_code_text="..--- / ... . .- ...",
+                                              audio_request=True,
+                                              audio_status=audio_status,
+                                              output_entry=output_entry)
+            mock_var.return_value = audio_filepath
 
-                assert output_entry.get() == expected_plain_text, "output_entry didn't match expected_plain_text."
-                assert output_entry.cget("state") == "normal", "output_entry state didn't match the original."
+            assert output_entry.get() == expected_plain_text, "output_entry didn't match expected_plain_text."
+            assert output_entry.cget("state") == "normal", "output_entry state didn't match the original."
 
-                assert os.path.isdir(tmp_dir), "The directory wasn't created in the test directory."
-                assert os.path.exists(audio_filepath), "The audio file wasn't created."
-                assert functions.most_recent_audio_filepath == audio_filepath, \
-                       "The variable 'most_recent_audio_filepath' wasn't set to audio_filepath."
+            assert os.path.isdir(tmp_dir), "The directory wasn't created in the test directory."
+            assert os.path.exists(audio_filepath), "The audio file wasn't created."
+            assert mock_var.return_value == audio_filepath, \
+                "The variable most_recent_audio_filepath wasn't set to audio_filepath."
 
-                ready_message: str = f"{globals.AUDIO_READY_MESSAGE} {audio_filepath}"
-                assert audio_status.get() == ready_message, "audio_status text wasn't set to ready_message."
+            ready_message: str = f"{globals.AUDIO_READY_MESSAGE} {audio_filepath}"
+            assert audio_status.get() == ready_message, "audio_status text wasn't set to ready_message."
